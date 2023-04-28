@@ -1,7 +1,9 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 	import { auth } from "../firebase";
-	import { authStore } from "$lib/stores";
+	import { authStore, isLoading } from "$lib/stores";
+	import { Toaster } from "svelte-french-toast";
+    import "./layout.scss"
 
     onMount(() => {
         auth.onAuthStateChanged((user) => {
@@ -17,3 +19,13 @@
         })
     })
 </script>
+
+<Toaster />
+<div id="root" class=" {$isLoading && "isLoading"}">
+    <slot />
+</div>
+{#if $isLoading}
+    <div class="loading">
+        <span class="loader"></span>
+    </div>
+{/if}

@@ -3,9 +3,12 @@ import type { fauth_t } from "./types";
 import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
 import { auth } from "../firebase";
 import toast from "svelte-french-toast";
+import { cachedwritable } from "svelte-cached-store";
 
+export const isLoading = writable<boolean>(true)
 
-export const authStore = writable<fauth_t | null>(null)
+// export const authStore = writable<fauth_t | null>(null)
+export const authStore = cachedwritable<fauth_t | null>(null, "authStore")
 
 export const authHandlers = {
     login: async (email: string, password: string) => {
@@ -21,6 +24,12 @@ export const authHandlers = {
         })
     },
     register: async (name: string, email: string, password: string) => {
+        if (!name || !email || !password) return toast.error("Please fill all the fields!")
+        if (password.length < 6) return toast.error("Password should be at least 6 characters long!")
+        if (!email.includes("@")) return toast.error("Invalid Email Address!")
+        if (!name.trim()) return toast.error("Name cannot be empty!")
+        if (name.length < 3) return toast.error("Name should be at least 3 characters long!")
+        if (name.length > 20) return toast.error("Name should be less than 20 characters long!")
         await createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
             authStore.set({
                 uid: userCredential.user.uid,
