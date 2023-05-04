@@ -14,18 +14,14 @@
 				<div class="profile">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
 					<div class="info">
-						<span>{$authStore?.displayName}</span>
-						<span class=" {$authStore?.emailVerified}">{$authStore?.emailVerified ? "Verified" : "Not Verified"}</span>
+						<span>{$authStore?.user.email}</span>
+						<span>{$authStore?.user.last_sign_in_at}</span>
 					</div>
 				</div>
 			</PopoverButton>
 			<PopoverPanel style="position: absolute; z-index: 10;right: 0;">
 				<FlyIn>
 					<div class="popoverProfile">
-						<div class="item">
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3H6a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h4M16 17l5-5-5-5M19.8 12H9"/></svg>
-							<span>Logout</span>
-						</div>
 						<div class="item">
 							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3H6a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h4M16 17l5-5-5-5M19.8 12H9"/></svg>
 							<span>Logout</span>
