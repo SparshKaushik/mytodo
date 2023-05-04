@@ -1,15 +1,20 @@
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth"
-import { getFirestore } from "firebase/firestore"
+import {
+	PUBLIC_FIREBASE_API_KEY,
+	PUBLIC_FIREBASE_APP_ID,
+	PUBLIC_FIREBASE_AUTH_DOMAIN,
+	PUBLIC_FIREBASE_MEASUREMENT_ID,
+	PUBLIC_FIREBASE_PROJECT_ID
+} from '$env/static/public';
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAR7EVrJw72j00UWYJD0hq9qN4bEDnEgu4",
-  authDomain: "mytodo-ef261.firebaseapp.com",
-  projectId: "mytodo-ef261",
-  storageBucket: "mytodo-ef261.appspot.com",
-  messagingSenderId: "1083288924723",
-  appId: "1:1083288924723:web:d2f6a39fce0eae371ae946",
-  measurementId: "G-M6YGBC4L09"
+	apiKey: PUBLIC_FIREBASE_API_KEY,
+	authDomain: PUBLIC_FIREBASE_AUTH_DOMAIN,
+	projectId: PUBLIC_FIREBASE_PROJECT_ID,
+	appId: PUBLIC_FIREBASE_APP_ID,
+	measurementId: PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase

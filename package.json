@@ -34,7 +34,8 @@
 		"tslib": "^2.4.1",
 		"typescript": "^5.0.0",
 		"vite": "^4.2.0",
-		"vitest": "^0.25.3"
+		"vitest": "^0.25.3",
+		"svelte-dnd-action": "^0.9.22"
 	},
 	"type": "module"
 }

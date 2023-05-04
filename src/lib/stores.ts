@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import type { fauth_t } from "./types";
+import type { fauth_t, task_t } from "./types";
 import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
 import { auth } from "../firebase";
 import toast from "svelte-french-toast";
@@ -9,6 +9,10 @@ export const isLoading = writable<boolean>(true)
 
 // export const authStore = writable<fauth_t | null>(null)
 export const authStore = cachedwritable<fauth_t | null>(null, "authStore")
+
+export const toDoStore = cachedwritable<task_t[]>([], "myToDo")
+
+export const modalStore = writable<any>(null)
 
 export const authHandlers = {
     login: async (email: string, password: string) => {

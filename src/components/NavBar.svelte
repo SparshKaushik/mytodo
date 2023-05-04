@@ -12,7 +12,7 @@
 		<Popover style="position: relative;">
 			<PopoverButton style="background: none;color: inherit;border: none;padding: 0;font: inherit;cursor: pointer;outline: inherit;">
 				<div class="profile">
-					<img src="https://mirror.sparshkaushik.workers.dev/0:/Sparsh%20Kaushik.png" alt="nothing" />
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
 					<div class="info">
 						<span>{$authStore?.displayName}</span>
 						<span class=" {$authStore?.emailVerified}">{$authStore?.emailVerified ? "Verified" : "Not Verified"}</span>
@@ -66,12 +66,11 @@
 			.profile {
 				display: flex;
 				align-items: center;
-				gap: 0.5rem;
+				gap: 1rem;
 
 				img {
 					width: auto;
 					height: 32px;
-
 					border-radius: 1rem;
 				}
 
@@ -117,6 +116,9 @@
 
 					cursor: pointer;
 
+					transition: all;
+					transition-duration: 300ms;
+
 					&:not(:last-child) {
 						border-bottom: solid 1px #938F99;
 
@@ -126,7 +128,7 @@
 					}
 
 					&:hover {
-						background-color: #2B2930;
+						background-color: rgba($color: #000000, $alpha: 0.2);
 						border-radius: 0 0 10px 10px;
 					}
 				}
