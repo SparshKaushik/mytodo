@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
 :root {
-    --primary-color: #141218
+	--primary-color: #141218;
 }
 
 * {
@@ -13,9 +13,9 @@
 	height: 100vh;
 	overflow: hidden;
 
-    @media screen and (max-width: 768px) {
-        height: 100dvh;
-    }
+	@media screen and (max-width: 768px) {
+		height: 100dvh;
+	}
 
 	&.isLoading {
 		display: none;
@@ -28,15 +28,15 @@
 	width: 100vw;
 	height: 100vh;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 
-    background-color: var(--primary-color);
+	background-color: var(--primary-color);
 
-    @media screen and (max-width: 768px) {
-        height: 100dvh;
-    }
+	@media screen and (max-width: 768px) {
+		height: 100dvh;
+	}
 
 	.loader {
 		width: 48px;

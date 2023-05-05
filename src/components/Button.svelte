@@ -20,7 +20,7 @@
 		border-radius: 6px;
 		font-weight: 500;
 		color: var(--color);
-        background-color: #1D1B20;
+		background-color: #1d1b20;
 		cursor: pointer;
 	}
 
@@ -36,7 +36,7 @@
 
 	button:hover {
 		color: #fff;
-        border: none;
+		border: none;
 	}
 
 	button:before {

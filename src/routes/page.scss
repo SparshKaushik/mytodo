@@ -1,79 +1,97 @@
 .main {
-    width: 100%;
-    height: 100%;
+	width: 100%;
+	height: 100%;
 
-    padding-top: 2rem;
+	padding-top: 2rem;
 
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
 
-    .todolist {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+	.todolist {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
 
-        width: 100%;
-        height: 100%;
+		width: 100%;
+		height: 100%;
 
-        .heading {
-            font-size: 1.2rem;
-            padding-bottom: 1rem;
-        }
+		.heading {
+			font-size: 1.2rem;
+			padding-bottom: 1rem;
+		}
 
-        .tasks {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+		.tasks {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
 
-            gap: 0.5rem;
+			gap: 0.5rem;
 
-            width: 100%;
-            height: 100%;
+			width: 100%;
+			height: 100%;
 
-            .task {
-                width: 20vw;
+			.task {
+				width: 20vw;
 
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
 
-                padding: 1rem;
+				padding: 1rem;
 
-                border-radius: 1rem;
-                background-color: #2B2930;
+				border-radius: 1rem;
+				background-color: #2b2930;
 
-                .details {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 0.2rem;
+				.actions {
+					opacity: 1;
+				}
+			}
+		}
+	}
+}
 
-                    overflow: hidden;
+.task {
+	width: 20vw;
 
-                    span {
-                        line-height: 1rem;
-                    }
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 
-                    .name {
-                        font-size: 1rem;
-                    }
+	padding: 1rem;
 
-                    .description {
-                        font-size: 0.85rem;
-                        white-space: nowrap;
-                    }
+	border-radius: 1rem;
+	background-color: #2b2930;
 
-                    .created {
-                        font-size: 0.5rem;
-                    }
-                }
+	.details {
+		display: flex;
+		flex-direction: column;
+		gap: 0.2rem;
 
-                .actions {
-                    display: flex;
-                    align-items: center;
+		overflow: hidden;
 
-                    gap: 0.5rem;
-                }
-            }
-        }
-    }
+		span {
+			line-height: 1rem;
+		}
+
+		.name {
+			font-size: 1rem;
+		}
+
+		.description {
+			font-size: 0.85rem;
+			white-space: nowrap;
+		}
+
+		.created {
+			font-size: 0.5rem;
+		}
+	}
+
+	.actions {
+		opacity: 0;
+
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
 }

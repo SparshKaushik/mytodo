@@ -10,9 +10,26 @@
 	</div>
 	<div class="end">
 		<Popover style="position: relative;">
-			<PopoverButton style="background: none;color: inherit;border: none;padding: 0;font: inherit;cursor: pointer;outline: inherit;">
+			<PopoverButton
+				style="background: none;color: inherit;border: none;padding: 0;font: inherit;cursor: pointer;outline: inherit;"
+			>
 				<div class="profile">
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="24"
+						height="24"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle
+							cx="12"
+							cy="7"
+							r="4"
+						/></svg
+					>
 					<div class="info">
 						<span>{$authStore?.user.email}</span>
 						<span>{$authStore?.user.last_sign_in_at}</span>
@@ -23,7 +40,18 @@
 				<FlyIn>
 					<div class="popoverProfile">
 						<div class="item">
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3H6a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h4M16 17l5-5-5-5M19.8 12H9"/></svg>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="24"
+								height="24"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="2"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								><path d="M10 3H6a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h4M16 17l5-5-5-5M19.8 12H9" /></svg
+							>
 							<span>Logout</span>
 						</div>
 					</div>
@@ -37,7 +65,7 @@
 	.navbar {
 		width: auto;
 
-		background-color: #211F26;
+		background-color: #211f26;
 
 		padding: 1rem 2rem;
 
@@ -72,7 +100,7 @@
 
 				.info {
 					width: 100%;
-					
+
 					display: flex;
 					flex-direction: column;
 					align-items: start;
@@ -97,12 +125,11 @@
 				display: flex;
 				flex-direction: column;
 
-				background-color: #2B2930;
+				background-color: #2b2930;
 
 				border-radius: 12px;
 
 				box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-
 
 				.item {
 					display: flex;
@@ -116,7 +143,7 @@
 					transition-duration: 300ms;
 
 					&:not(:last-child) {
-						border-bottom: solid 1px #938F99;
+						border-bottom: solid 1px #938f99;
 
 						&:hover {
 							border-radius: 10px 10px 0 0;

@@ -3,42 +3,58 @@
 
 	import { dndzone, type Item } from 'svelte-dnd-action';
 	import { goto } from '$app/navigation';
-	import { authStore, isLoading, modalStore } from '$lib/stores';
+	import { authStore, isLoading, modalStore, toDoStore } from '$lib/stores';
 	import { onMount } from 'svelte';
 	import NavBar from '../components/NavBar.svelte';
 	import IconButton from '../components/IconButton.svelte';
 	import { flip } from 'svelte/animate';
+	import { taskHandlers } from '$lib/model';
+	import { taskStatus } from '$lib/types';
 
 	let toDo: Item[], doing: Item[], done: Item[];
 	const flipDurationMs = 300;
 	const dropTargetStyle = {};
 
-	toDo = [
-		{ id: 1, name: 'Task 1' },
-		{ id: 2, name: 'Task 2' }
-	];
-	doing = [
-		{ id: 1, name: 'Task 1' },
-		{ id: 2, name: 'Task 2' }
-	];
-	done = [
-		{ id: 1, name: 'Task 1' },
-		{ id: 2, name: 'Task 2' }
-	];
+	$: toDo = $toDoStore
+		.filter((task) => task.status === taskStatus.ToDo)
+		.map((task) => {
+			return { id: task.id, name: task.name };
+		});
+	$: doing = $toDoStore
+		.filter((task) => task.status === taskStatus.Doing)
+		.map((task) => {
+			return { id: task.id, name: task.name };
+		});
+	$: done = $toDoStore
+		.filter((task) => task.status === taskStatus.Done)
+		.map((task) => {
+			return { id: task.id, name: task.name };
+		});
 
 	onMount(() => {
 		$authStore ? isLoading.set(false) : goto('/login');
 	});
 
-	function handletoDO(e: { detail: { items: Item[] } }) {
-		toDo = e.detail.items;
+	function handleConsider(e: { detail: { items: Item[] } }, status: taskStatus) {
+		if (status === taskStatus.ToDo) {
+			toDo = e.detail.items;
+		} else if (status === taskStatus.Doing) {
+			doing = e.detail.items;
+		} else if (status === taskStatus.Done) {
+			done = e.detail.items;
+		}
 	}
-	function handledoing(e: { detail: { items: Item[] } }) {
-		doing = e.detail.items;
+	function handleFinalize(e: { detail: { items: Item[] } }, status: taskStatus) {
+		e.detail.items.forEach((item) => {
+			let thisTask = $toDoStore.find((task) => task.id === item.id);
+			thisTask?.status !== status && taskHandlers.updateTask(item.id, status);
+		});
+		handleConsider(e, status);
 	}
-	function handledone(e: { detail: { items: Item[] } }) {
-		done = e.detail.items;
-	}
+
+	onMount(() => {
+		$authStore?.user.id && taskHandlers.getTasks($authStore.user.id);
+	});
 </script>
 
 <NavBar />
@@ -48,14 +64,13 @@
 		<section
 			class="tasks"
 			use:dndzone={{ items: toDo, dropTargetStyle: dropTargetStyle }}
-			on:consider={handletoDO}
-			on:finalize={handletoDO}
+			on:consider={e => handleConsider(e, taskStatus.ToDo)}
+			on:finalize={e => handleFinalize(e, taskStatus.ToDo)}
 		>
 			{#each toDo as item (item.id)}
 				<div class="task" animate:flip={{ duration: flipDurationMs }}>
 					<div class="details">
 						<span class="name">{item.name}</span>
-						<!-- <span class="description"></span> -->
 						<span class="created">13th Bruh 2022</span>
 					</div>
 					<div class="actions">
@@ -95,18 +110,17 @@
 		</section>
 	</div>
 	<div class="todolist">
-		<div class="heading">ToDo</div>
+		<div class="heading">Doing</div>
 		<section
 			class="tasks"
 			use:dndzone={{ items: doing, dropTargetStyle }}
-			on:consider={handledoing}
-			on:finalize={handledoing}
+			on:consider={e => handleConsider(e, taskStatus.Doing)}
+			on:finalize={e => handleFinalize(e, taskStatus.Doing)}
 		>
 			{#each doing as item (item.id)}
 				<div class="task" animate:flip={{ duration: flipDurationMs }}>
 					<div class="details">
 						<span class="name">{item.name}</span>
-						<!-- <span class="description"></span> -->
 						<span class="created">13th Bruh 2022</span>
 					</div>
 					<div class="actions">
@@ -146,18 +160,17 @@
 		</section>
 	</div>
 	<div class="todolist">
-		<div class="heading">ToDo</div>
+		<div class="heading">Done</div>
 		<section
 			class="tasks"
 			use:dndzone={{ items: done, dropTargetStyle }}
-			on:consider={handledone}
-			on:finalize={handledone}
+			on:consider={e => handleConsider(e, taskStatus.Done)}
+			on:finalize={e => handleFinalize(e, taskStatus.Done)}
 		>
 			{#each done as item (item.id)}
 				<div class="task" animate:flip={{ duration: flipDurationMs }}>
 					<div class="details">
 						<span class="name">{item.name}</span>
-						<!-- <span class="description"></span> -->
 						<span class="created">13th Bruh 2022</span>
 					</div>
 					<div class="actions">

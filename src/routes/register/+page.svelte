@@ -1,5 +1,5 @@
 <script lang="ts">
-	import "./page.scss"
+	import './page.scss';
 	import { goto } from '$app/navigation';
 	import { authHandlers, authStore, isLoading } from '$lib/stores';
 	import Input from '../../components/Input.svelte';
@@ -7,8 +7,8 @@
 	import toast from 'svelte-french-toast';
 
 	$: if ($authStore) {
-        goto('/')
-    } else {
+		goto('/');
+	} else {
 		isLoading.set(false);
 	}
 	isLoading.set(false);
@@ -88,7 +88,7 @@
 					if (password === cpassword) {
 						await authHandlers.register(name, email, password);
 					} else {
-						toast.error("Your Passwords Doesn't Match")
+						toast.error("Your Passwords Doesn't Match");
 					}
 				}}
 			/>

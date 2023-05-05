@@ -1,11 +1,11 @@
 <script lang="ts">
-	import "./page.scss"
-	
-	import { goto } from "$app/navigation";
-	import { authHandlers, authStore, isLoading } from "$lib/stores";
-	import Input from "../../components/Input.svelte";
-	import Button from "../../components/Button.svelte";
-	import FlyIn from "../../components/Transitions/FlyIn.svelte";
+	import './page.scss';
+
+	import { goto } from '$app/navigation';
+	import { authHandlers, authStore, isLoading } from '$lib/stores';
+	import Input from '../../components/Input.svelte';
+	import Button from '../../components/Button.svelte';
+	import FlyIn from '../../components/Transitions/FlyIn.svelte';
 
 	$: $authStore ? goto('/') : isLoading.set(false);
 
