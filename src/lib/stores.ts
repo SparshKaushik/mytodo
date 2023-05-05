@@ -5,6 +5,7 @@ import { supabase } from '../supabase';
 import type { Session } from '@supabase/supabase-js';
 
 export const isLoading = writable<boolean>(true);
+export const isSaving = writable<boolean | null>(null);
 
 // export const authStore = writable<fauth_t | null>(null)
 export const authStore = writable<Session | null>(null);

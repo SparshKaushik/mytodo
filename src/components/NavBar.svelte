@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { authStore } from '$lib/stores';
+	import { authStore, isSaving } from '$lib/stores';
 	import { Popover, PopoverButton, PopoverPanel } from '@rgossiaux/svelte-headlessui';
 	import FlyIn from './Transitions/FlyIn.svelte';
 </script>
@@ -7,6 +7,25 @@
 <div class="navbar">
 	<div class="start">
 		<div class="heading">My ToDo List</div>
+		<div class="saving">
+			{#if $isSaving}
+				<span class="loader" />
+				Saving
+			{:else if $isSaving === false}
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				>
+					<polyline points="20 6 9 17 4 12" />
+				</svg>
+				Saved
+			{/if}
+		</div>
 	</div>
 	<div class="end">
 		<Popover style="position: relative;">
@@ -76,6 +95,49 @@
 		box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 
 		.start {
+			display: flex;
+			align-items: center;
+
+			gap: 1rem;
+
+			div {
+				display: flex;
+				align-items: center;
+
+				&.saving {
+					display: flex;
+					align-items: center;
+					font-size: 0.75rem;
+
+					gap: 0.5rem;
+
+					.loader {
+						width: 1rem;
+						height: 1rem;
+						border-radius: 50%;
+						display: inline-block;
+						border-top: 3px solid #fff;
+						border-right: 3px solid transparent;
+						box-sizing: border-box;
+						animation: rotation 1s linear infinite;
+					}
+
+					@keyframes rotation {
+						0% {
+							transform: rotate(0deg);
+						}
+						100% {
+							transform: rotate(360deg);
+						}
+					}
+
+					svg {
+						width: 1rem;
+						height: 1rem;
+					}
+				}
+			}
+
 			.heading {
 				font-size: 1.25rem;
 			}
@@ -92,11 +154,11 @@
 				align-items: center;
 				gap: 1rem;
 
-				img {
-					width: auto;
-					height: 32px;
-					border-radius: 1rem;
-				}
+				// img {
+				// 	width: auto;
+				// 	height: 32px;
+				// 	border-radius: 1rem;
+				// }
 
 				.info {
 					width: 100%;
@@ -107,14 +169,6 @@
 
 					span {
 						font-size: 0.75rem;
-
-						&.true {
-							color: greenyellow;
-						}
-
-						&.false {
-							color: red;
-						}
 					}
 				}
 			}
