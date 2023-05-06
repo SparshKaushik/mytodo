@@ -48,7 +48,7 @@
 	function handleFinalize(e: { detail: { items: Item[] } }, status: taskStatus) {
 		e.detail.items.forEach((item) => {
 			let thisTask = $toDoStore.find((task) => task.id === item.id);
-			thisTask?.status !== status && taskHandlers.updateTask(item.id, status);
+			thisTask?.status !== status && taskHandlers.updateTaskStatus(item.id, status);
 		});
 		handleConsider(e, status);
 	}

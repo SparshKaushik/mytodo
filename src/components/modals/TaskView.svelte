@@ -8,6 +8,8 @@
 	import { taskHandlers } from '$lib/model';
 
 	let task: task_t;
+	let isEditing: boolean = false;
+	let descriptionDiv: HTMLDivElement;
 
 	onMount(() => {
 		supabase
@@ -39,7 +41,7 @@
 	<div class="header">
 		<span class="heading">
 			{task?.name} <br />
-			<span class="created">Created At : {new Date(task.createdAt)}</span>
+			<span class="created">Created At : {new Date(task.createdAt).toLocaleString()}</span>
 		</span>
 		<div class="end">
 			<IconButton
@@ -80,7 +82,23 @@
 		</div>
 	</div>
 	<div class="body">
-		<div class="description">
+		<div
+			class="description"
+			on:dblclick={() => {
+				isEditing = true;
+			}}
+			contenteditable={isEditing}
+			on:blur={() => {
+				$authStore?.user.id &&
+					taskHandlers.updateTaskDescription(
+						task?.id,
+						descriptionDiv.innerText,
+						$authStore?.user.id
+					);
+				isEditing = false;
+			}}
+			bind:this={descriptionDiv}
+		>
 			{task?.description}
 		</div>
 	</div>
@@ -133,6 +151,7 @@
 			height: 100%;
 			font-size: 1rem;
 			font-weight: 400;
+			white-space: pre-wrap;
 
 			&:focus {
 				outline: none;

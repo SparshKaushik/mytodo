@@ -27,7 +27,7 @@ export const taskHandlers = {
 				toDoStore.set(tasks);
 			});
 	},
-	updateTask: (id: string, status: taskStatus) => {
+	updateTaskStatus: (id: string, status: taskStatus) => {
 		isSaving.set(true);
 		toDoStore.update((tasks) => {
 			return tasks.map((task) => {
@@ -86,5 +86,30 @@ export const taskHandlers = {
 					isSaving.set(null);
 				}, 1000);
 			});
+	},
+	updateTaskDescription: (id: string, description: string, user_id: string) => {
+		isSaving.set(true);
+		toDoStore.update((tasks) => {
+			return tasks.map((task) => {
+				if (task.id === id) {
+					return {
+						...task,
+						description
+					};
+				}
+				return task;
+			});
+		});
+		supabase
+			.from('tasks')
+			.update({ desc: description })
+			.eq('id', id)
+			.then((data) => {
+				console.log(data);
+			});
+		isSaving.set(false);
+		setTimeout(() => {
+			isSaving.set(null);
+		}, 1000);
 	}
 };
