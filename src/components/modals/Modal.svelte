@@ -25,8 +25,6 @@
 			}
 		});
 	});
-
-	$: console.log($modalStore);
 </script>
 
 <div>

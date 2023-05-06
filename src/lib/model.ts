@@ -10,7 +10,6 @@ export const taskHandlers = {
 			.select('*')
 			.eq('owner', user_id)
 			.then((data) => {
-				console.log(data);
 				let tasks: task_t[] = [];
 				data.data?.forEach((task) => {
 					tasks = [
@@ -45,12 +44,11 @@ export const taskHandlers = {
 			.update({ status })
 			.eq('id', id)
 			.then((data) => {
-				console.log(data);
+				isSaving.set(false);
+				setTimeout(() => {
+					isSaving.set(null);
+				}, 1000);
 			});
-		isSaving.set(false);
-		setTimeout(() => {
-			isSaving.set(null);
-		}, 1000);
 	},
 	addTask: (name: string, description: string, user_id: string) => {
 		isSaving.set(true);
@@ -105,11 +103,10 @@ export const taskHandlers = {
 			.update({ desc: description })
 			.eq('id', id)
 			.then((data) => {
-				console.log(data);
+				isSaving.set(false);
+				setTimeout(() => {
+					isSaving.set(null);
+				}, 1000);
 			});
-		isSaving.set(false);
-		setTimeout(() => {
-			isSaving.set(null);
-		}, 1000);
 	}
 };

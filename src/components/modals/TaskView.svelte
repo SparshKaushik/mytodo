@@ -17,7 +17,6 @@
 			.select('*')
 			.eq('id', $modalStore?.props.taskId)
 			.then((data) => {
-				console.log(data);
 				if (data.data?.length === 1) {
 					task = {
 						id: data.data[0].id,
