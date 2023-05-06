@@ -1,6 +1,7 @@
 import { supabase } from '../supabase';
-import type { taskStatus, task_t } from './types';
+import { taskStatus, type task_t } from './types';
 import { isSaving, toDoStore } from './stores';
+import { closeModal } from './utils';
 
 export const taskHandlers = {
 	getTasks: (user_id: string) => {
@@ -50,5 +51,40 @@ export const taskHandlers = {
 		setTimeout(() => {
 			isSaving.set(null);
 		}, 1000);
+	},
+	addTask: (name: string, description: string, user_id: string) => {
+		isSaving.set(true);
+		supabase
+			.from('tasks')
+			.insert({
+				name,
+				desc: description,
+				owner: user_id,
+				status: taskStatus.ToDo
+			})
+			.then(() => {
+				taskHandlers.getTasks(user_id);
+				closeModal();
+				isSaving.set(false);
+				setTimeout(() => {
+					isSaving.set(null);
+				}, 1000);
+			});
+	},
+	deleteTask: (id: string, user_id: string) => {
+		isSaving.set(true);
+		supabase
+			.from('tasks')
+			.delete()
+			.eq('id', id)
+			.eq('owner', user_id)
+			.then(() => {
+				taskHandlers.getTasks(user_id);
+				closeModal();
+				isSaving.set(false);
+				setTimeout(() => {
+					isSaving.set(null);
+				}, 1000);
+			});
 	}
 };

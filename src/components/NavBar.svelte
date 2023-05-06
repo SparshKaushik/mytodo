@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { authStore, isSaving } from '$lib/stores';
+	import { authStore, isSaving, modalStore } from '$lib/stores';
 	import { Popover, PopoverButton, PopoverPanel } from '@rgossiaux/svelte-headlessui';
 	import FlyIn from './Transitions/FlyIn.svelte';
 	import Loader from './Loader.svelte';
+	import NewTask from './modals/NewTask.svelte';
 </script>
 
 <div class="navbar">
@@ -29,6 +30,15 @@
 		</div>
 	</div>
 	<div class="end">
+		<button
+			on:click={() => {
+				modalStore.set({
+					component: NewTask,
+					props: {},
+					isLoading: false
+				});
+			}}>New Task</button
+		>
 		<Popover style="position: relative;">
 			<PopoverButton
 				style="background: none;color: inherit;border: none;padding: 0;font: inherit;cursor: pointer;outline: inherit;"

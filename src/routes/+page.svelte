@@ -6,10 +6,11 @@
 	import { authStore, isLoading, modalStore, toDoStore } from '$lib/stores';
 	import { onMount } from 'svelte';
 	import NavBar from '../components/NavBar.svelte';
-	import IconButton from '../components/IconButton.svelte';
 	import { flip } from 'svelte/animate';
 	import { taskHandlers } from '$lib/model';
 	import { taskStatus } from '$lib/types';
+	import TaskView from '../components/modals/TaskView.svelte';
+	import { visualDate } from '$lib/utils';
 
 	let toDo: Item[], doing: Item[], done: Item[];
 	const flipDurationMs = 300;
@@ -52,6 +53,10 @@
 		handleConsider(e, status);
 	}
 
+	function getDateTime(id: string) {
+		return $toDoStore.find(task => task.id === id)?.createdAt || '';
+	}
+
 	onMount(() => {
 		$authStore?.user.id && taskHandlers.getTasks($authStore.user.id);
 	});
@@ -64,46 +69,23 @@
 		<section
 			class="tasks"
 			use:dndzone={{ items: toDo, dropTargetStyle: dropTargetStyle }}
-			on:consider={e => handleConsider(e, taskStatus.ToDo)}
-			on:finalize={e => handleFinalize(e, taskStatus.ToDo)}
+			on:consider={(e) => handleConsider(e, taskStatus.ToDo)}
+			on:finalize={(e) => handleFinalize(e, taskStatus.ToDo)}
 		>
 			{#each toDo as item (item.id)}
-				<div class="task" animate:flip={{ duration: flipDurationMs }}>
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<div class="task" animate:flip={{ duration: flipDurationMs }} on:click={
+					() => {
+						modalStore.set({
+							component: TaskView,
+							props: { taskId: item.id },
+							isLoading: true
+						})
+					}
+				}>
 					<div class="details">
 						<span class="name">{item.name}</span>
-						<span class="created">13th Bruh 2022</span>
-					</div>
-					<div class="actions">
-						<IconButton>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="24"
-								height="24"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							>
-								<polyline points="20 6 9 17 4 12" />
-							</svg>
-						</IconButton>
-						<IconButton>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="24"
-								height="24"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							>
-								<circle cx="12" cy="12" r="10" /><line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
-							</svg>
-						</IconButton>
+						<span class="created">{visualDate(new Date(getDateTime(item.id)))}</span>
 					</div>
 				</div>
 			{/each}
@@ -114,46 +96,23 @@
 		<section
 			class="tasks"
 			use:dndzone={{ items: doing, dropTargetStyle }}
-			on:consider={e => handleConsider(e, taskStatus.Doing)}
-			on:finalize={e => handleFinalize(e, taskStatus.Doing)}
+			on:consider={(e) => handleConsider(e, taskStatus.Doing)}
+			on:finalize={(e) => handleFinalize(e, taskStatus.Doing)}
 		>
 			{#each doing as item (item.id)}
-				<div class="task" animate:flip={{ duration: flipDurationMs }}>
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<div class="task" animate:flip={{ duration: flipDurationMs }} on:click={
+					() => {
+						modalStore.set({
+							component: TaskView,
+							props: { taskId: item.id },
+							isLoading: true
+						})
+					}
+				}>
 					<div class="details">
 						<span class="name">{item.name}</span>
 						<span class="created">13th Bruh 2022</span>
-					</div>
-					<div class="actions">
-						<IconButton>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="24"
-								height="24"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							>
-								<polyline points="20 6 9 17 4 12" />
-							</svg>
-						</IconButton>
-						<IconButton>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="24"
-								height="24"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							>
-								<circle cx="12" cy="12" r="10" /><line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
-							</svg>
-						</IconButton>
 					</div>
 				</div>
 			{/each}
@@ -164,46 +123,23 @@
 		<section
 			class="tasks"
 			use:dndzone={{ items: done, dropTargetStyle }}
-			on:consider={e => handleConsider(e, taskStatus.Done)}
-			on:finalize={e => handleFinalize(e, taskStatus.Done)}
+			on:consider={(e) => handleConsider(e, taskStatus.Done)}
+			on:finalize={(e) => handleFinalize(e, taskStatus.Done)}
 		>
 			{#each done as item (item.id)}
-				<div class="task" animate:flip={{ duration: flipDurationMs }}>
+				<!-- svelte-ignore a11y-click-events-have-key-events -->
+				<div class="task" animate:flip={{ duration: flipDurationMs }} on:click={
+					() => {
+						modalStore.set({
+							component: TaskView,
+							props: { taskId: item.id },
+							isLoading: true
+						})
+					}
+				}>
 					<div class="details">
 						<span class="name">{item.name}</span>
 						<span class="created">13th Bruh 2022</span>
-					</div>
-					<div class="actions">
-						<IconButton>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="24"
-								height="24"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							>
-								<polyline points="20 6 9 17 4 12" />
-							</svg>
-						</IconButton>
-						<IconButton>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="24"
-								height="24"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="currentColor"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-							>
-								<circle cx="12" cy="12" r="10" /><line x1="4.93" y1="4.93" x2="19.07" y2="19.07" />
-							</svg>
-						</IconButton>
 					</div>
 				</div>
 			{/each}

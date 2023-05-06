@@ -10,7 +10,11 @@
 
 <div class="input">
 	<slot />
-	<input use:typeAction {placeholder} bind:value={inputValue} />
+	{#if type !== 'textarea'}
+		<input use:typeAction {placeholder} bind:value={inputValue} />
+	{:else}
+		<textarea {placeholder} bind:value={inputValue} />
+	{/if}
 </div>
 
 <style lang="scss">
@@ -24,8 +28,9 @@
 		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 		border-radius: 5px;
 
-		input {
+		input, textarea {
 			width: 100%;
+			height: inherit;
 
 			background: transparent;
 			outline: none;
@@ -35,6 +40,14 @@
 
 			color: white;
 			font-size: 1rem;
+
+			&:only-child {
+				padding: 15px 0px;
+			}
+		}
+
+		textarea {
+			resize: vertical;
 		}
 	}
 </style>

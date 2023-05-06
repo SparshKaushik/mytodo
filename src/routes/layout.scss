@@ -58,3 +58,24 @@
 		}
 	}
 }
+
+button {
+	background-color: #2b2930;
+	border: none;
+	border-radius: 0.5rem;
+	padding: 0.5rem 1rem;
+
+	font-size: 0.75rem;
+	font-weight: 600;
+
+	cursor: pointer;
+
+	transition: all;
+	transition-duration: 300ms;
+
+	color: #fff;
+
+	&:hover {
+		background-color: #938f994d;
+	}
+}
