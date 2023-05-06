@@ -2,6 +2,7 @@
 	import { authStore, isSaving } from '$lib/stores';
 	import { Popover, PopoverButton, PopoverPanel } from '@rgossiaux/svelte-headlessui';
 	import FlyIn from './Transitions/FlyIn.svelte';
+	import Loader from './Loader.svelte';
 </script>
 
 <div class="navbar">
@@ -9,7 +10,7 @@
 		<div class="heading">My ToDo List</div>
 		<div class="saving">
 			{#if $isSaving}
-				<span class="loader" />
+				<Loader />
 				Saving
 			{:else if $isSaving === false}
 				<svg
@@ -111,26 +112,6 @@
 
 					gap: 0.5rem;
 
-					.loader {
-						width: 1rem;
-						height: 1rem;
-						border-radius: 50%;
-						display: inline-block;
-						border-top: 3px solid #fff;
-						border-right: 3px solid transparent;
-						box-sizing: border-box;
-						animation: rotation 1s linear infinite;
-					}
-
-					@keyframes rotation {
-						0% {
-							transform: rotate(0deg);
-						}
-						100% {
-							transform: rotate(360deg);
-						}
-					}
-
 					svg {
 						width: 1rem;
 						height: 1rem;
@@ -148,6 +129,8 @@
 
 			display: flex;
 			align-items: center;
+
+			gap: 1rem;
 
 			.profile {
 				display: flex;

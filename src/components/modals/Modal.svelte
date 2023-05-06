@@ -1,7 +1,10 @@
 <script lang="ts">
-	import { modalStore } from "$lib/stores";
-	import { closeModal } from "$lib/utils";
-	import { onMount } from "svelte";
+	import { modalStore } from '$lib/stores';
+	import { closeModal } from '$lib/utils';
+	import { onMount } from 'svelte';
+	import FlyIn from '../Transitions/FlyIn.svelte';
+	import { fade } from 'svelte/transition';
+	import Loader from '../Loader.svelte';
 
 	let ModalComponent: any;
 
@@ -10,26 +13,37 @@
 	});
 
 	onMount(() => {
-		document.addEventListener("keydown", (e) => {
-			if (e.key === "Escape") {
+		document.addEventListener('keydown', (e) => {
+			if (e.key === 'Escape') {
 				closeModal();
 			}
 		});
 
-		document.addEventListener("click", (e) => {
-			if (e.target === document.querySelector(".ModalContainer")) {
+		document.addEventListener('click', (e) => {
+			if (e.target === document.querySelector('.ModalContainer')) {
 				closeModal();
 			}
 		});
 	});
+
+	$: console.log($modalStore);
 </script>
 
 <div>
 	{#if $modalStore}
-		<div class="ModalContainer">
-			<div class="Modal">
-				<svelte:component this={ModalComponent} />
-			</div>
+		<div class="ModalContainer" in:fade={{ duration: 200 }} out:fade={{ duration: 200 }}>
+			<FlyIn>
+				<div class="Modal">
+					{#if $modalStore?.isLoading}
+						<div class="modal-loading">
+							<Loader />
+						</div>
+					{/if}
+					<div class="content {$modalStore.isLoading ? 'isloading' : ''}">
+						<svelte:component this={ModalComponent} />
+					</div>
+				</div>
+			</FlyIn>
 		</div>
 	{/if}
 </div>
@@ -48,8 +62,8 @@
 		background-color: rgba($color: #000000, $alpha: 0.5);
 
 		.Modal {
-			min-width: 40vw;
-			min-height: 50vh;
+			width: 40vw;
+			height: 50vh;
 
 			background-color: #1d1b20;
 
@@ -58,7 +72,28 @@
 
 			display: flex;
 			flex-direction: column;
-			gap: 1rem;
+
+			.content {
+				width: inherit;
+				height: inherit;
+
+				display: flex;
+				flex-direction: column;
+				gap: 1rem;
+
+				&.isloading {
+					display: none;
+				}
+			}
+
+			.modal-loading {
+				width: 100%;
+				height: 100%;
+
+				display: flex;
+				align-items: center;
+				justify-content: center;
+			}
 		}
 	}
 </style>
