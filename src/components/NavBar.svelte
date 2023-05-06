@@ -160,6 +160,10 @@
 					flex-direction: column;
 					align-items: start;
 
+					@media screen and (max-width: 768px) {
+						display: none;
+					}
+
 					span {
 						font-size: 0.75rem;
 					}
@@ -168,14 +172,13 @@
 
 			.popoverProfile {
 				width: fit-content;
+				margin-top: 0.5rem;
 
 				display: flex;
 				flex-direction: column;
 
 				background-color: #2b2930;
-
 				border-radius: 12px;
-
 				box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 
 				.item {

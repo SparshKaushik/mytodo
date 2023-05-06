@@ -60,7 +60,7 @@
 		background-color: rgba($color: #000000, $alpha: 0.5);
 
 		.Modal {
-			width: 40vw;
+			min-width: 40vw;
 			height: 50vh;
 
 			background-color: #1d1b20;
@@ -70,6 +70,10 @@
 
 			display: flex;
 			flex-direction: column;
+
+			@media screen and (max-width: 768px) {
+				min-width: 80vw;
+			}
 
 			.content {
 				width: inherit;
