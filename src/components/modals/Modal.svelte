@@ -61,7 +61,8 @@
 
 		.Modal {
 			min-width: 40vw;
-			height: 50vh;
+			min-height: 40vh;
+			max-height: 60vh;
 
 			background-color: #1d1b20;
 
@@ -90,7 +91,7 @@
 
 			.modal-loading {
 				width: 100%;
-				height: 100%;
+				min-height: inherit;
 
 				display: flex;
 				align-items: center;

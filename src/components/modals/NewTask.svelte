@@ -56,14 +56,13 @@
 
 		display: flex;
 		flex-direction: column;
-		justify-content: space-between;
 
 		padding: 0.5rem;
 		gap: 1rem;
 		overflow: auto;
 
 		:global(.input) {
-			height: inherit;
+			min-height: inherit;
 			border: 1px solid #a0a0a0;
 		}
 
