@@ -3,7 +3,7 @@ export interface task_t {
 	name: string;
 	description: string;
 	status: string;
-	createdAt: number;
+	createdAt: Date;
 }
 
 export enum taskStatus {

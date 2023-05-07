@@ -34,6 +34,7 @@
 
 	onMount(() => {
 		$authStore ? isLoading.set(false) : goto('/login');
+		$authStore?.user.id && taskHandlers.getTasks($authStore.user.id);
 	});
 
 	function handleConsider(e: { detail: { items: Item[] } }, status: taskStatus) {
@@ -56,10 +57,6 @@
 	function getDateTime(id: string) {
 		return $toDoStore.find(task => task.id === id)?.createdAt || '';
 	}
-
-	onMount(() => {
-		$authStore?.user.id && taskHandlers.getTasks($authStore.user.id);
-	});
 </script>
 
 <NavBar />

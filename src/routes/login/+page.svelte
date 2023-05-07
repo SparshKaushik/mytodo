@@ -6,8 +6,9 @@
 	import Input from '../../components/Input.svelte';
 	import Button from '../../components/Button.svelte';
 	import FlyIn from '../../components/Transitions/FlyIn.svelte';
+	import { onMount } from 'svelte';
 
-	$: $authStore ? goto('/') : isLoading.set(false);
+	$: $authStore ? goto('/') : onMount(() => isLoading.set(false));
 
 	let email: string, password: string;
 </script>

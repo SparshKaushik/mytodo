@@ -19,9 +19,12 @@ export const taskHandlers = {
 							name: task.name,
 							description: task.desc,
 							status: task.status,
-							createdAt: task.created_at
+							createdAt: new Date(task.created_at)
 						}
 					];
+				});
+				tasks.sort((a, b) => {
+					return b.createdAt.getTime() - a.createdAt.getTime();
 				});
 				toDoStore.set(tasks);
 			});
