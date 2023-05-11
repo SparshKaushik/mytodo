@@ -4,11 +4,15 @@
 	import FlyIn from './Transitions/FlyIn.svelte';
 	import Loader from './Loader.svelte';
 	import NewTask from './modals/NewTask.svelte';
+	import Logo from './Logo.svelte';
 </script>
 
 <div class="navbar">
 	<div class="start">
-		<div class="heading">My ToDo List</div>
+		<div class="heading">
+			<Logo width="28px" height="28px" />
+			<span>uch Kare</span>
+		</div>
 		<div class="saving">
 			{#if $isSaving}
 				<Loader />
@@ -113,10 +117,12 @@
 
 			div {
 				display: flex;
-				align-items: center;
+
+				span {
+					align-self: baseline;
+				}
 
 				&.saving {
-					display: flex;
 					align-items: center;
 					font-size: 0.75rem;
 
