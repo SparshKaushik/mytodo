@@ -37,8 +37,6 @@
 			return { id: task.id, name: task.name };
 		});
 
-	$: console.log(taskList);
-
 	onMount(() => {
 		$authStore ? isLoading.set(false) : goto('/login');
 		$authStore?.user.id && taskHandlers.getTasks($authStore.user.id);
