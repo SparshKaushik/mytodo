@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { authStore, isSaving, modalStore } from '$lib/stores';
+	import { authHandlers, authStore, isSaving, modalStore } from '$lib/stores';
 	import { Popover, PopoverButton, PopoverPanel } from '@rgossiaux/svelte-headlessui';
 	import FlyIn from './Transitions/FlyIn.svelte';
 	import Loader from './Loader.svelte';
@@ -73,7 +73,12 @@
 			<PopoverPanel style="position: absolute; z-index: 10;right: 0;">
 				<FlyIn>
 					<div class="popoverProfile">
-						<div class="item">
+						<!-- svelte-ignore a11y-click-events-have-key-events -->
+						<div class="item" on:click={
+							() => {
+								authHandlers.logout();
+							}
+						}>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								width="24"
