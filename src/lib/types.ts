@@ -1,3 +1,5 @@
+import type { Item } from "svelte-dnd-action";
+
 export interface task_t {
 	id: string;
 	name: string;
@@ -16,4 +18,10 @@ export interface modalStore_t {
 	component: any;
 	props: any;
 	isLoading: boolean;
+}
+
+export interface taskList_t {
+	todo: Item[];
+	doing: Item[];
+	done: Item[];
 }
