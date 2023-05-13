@@ -131,36 +131,38 @@
 		</div>
 	</div>
 	<div class="body">
-		<div
-			class="description {isEditing ? 'editing' : ''}"
-			on:dblclick={() => {
-				isEditing = true;
-			}}
-			contenteditable={isEditing}
-			on:blur={() => {
-				$authStore?.user.id &&
-					taskHandlers.updateTaskDescription(
-						task?.id,
-						descriptionDiv.innerText,
-						$authStore?.user.id
-					);
-				isEditing = false;
-			}}
-			bind:this={descriptionDiv}
-			on:input={() => {
-				clearTimeout(editingTimeout);
-				editingTimeout = setTimeout(() => {
+		{#if task.description !== ''}
+			<div
+				class="description {isEditing ? 'editing' : ''}"
+				on:dblclick={() => {
+					isEditing = true;
+				}}
+				contenteditable={isEditing}
+				on:blur={() => {
 					$authStore?.user.id &&
 						taskHandlers.updateTaskDescription(
 							task?.id,
 							descriptionDiv.innerText,
 							$authStore?.user.id
 						);
-				}, 5000);
-			}}
-		>
-			{task?.description}
-		</div>
+					isEditing = false;
+				}}
+				bind:this={descriptionDiv}
+				on:input={() => {
+					clearTimeout(editingTimeout);
+					editingTimeout = setTimeout(() => {
+						$authStore?.user.id &&
+							taskHandlers.updateTaskDescription(
+								task?.id,
+								descriptionDiv.innerText,
+								$authStore?.user.id
+							);
+					}, 5000);
+				}}
+			>
+				{task?.description}
+			</div>
+		{/if}
 		{#if task.milestones}
 			<div class="milestones">
 				{#each task.milestones as milestone}
@@ -355,6 +357,15 @@
 			display: flex;
 			flex-direction: column;
 			margin-top: 1rem;
+
+			&:only-child {
+				.milestone {
+					&:first-child {
+						border-top: none;
+						padding-top: 0;
+					}
+				}
+			}
 
 			.milestone {
 				display: flex;
