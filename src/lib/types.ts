@@ -6,6 +6,12 @@ export interface task_t {
 	description: string;
 	status: string;
 	createdAt: Date;
+	milestones?: milestone_t[];
+}
+
+export interface milestone_t {
+	name: string;
+	status: taskStatus.ToDo | taskStatus.Done;
 }
 
 export enum taskStatus {

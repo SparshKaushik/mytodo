@@ -72,6 +72,8 @@
 			display: flex;
 			flex-direction: column;
 
+			overflow: auto;
+
 			@media screen and (max-width: 768px) {
 				min-width: 80vw;
 			}

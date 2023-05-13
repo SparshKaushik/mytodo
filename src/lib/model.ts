@@ -1,5 +1,5 @@
 import { supabase } from '../supabase';
-import { taskStatus, type task_t } from './types';
+import { taskStatus, type milestone_t, type task_t } from './types';
 import { isSaving, toDoStore } from './stores';
 import { closeModal } from './utils';
 
@@ -89,6 +89,7 @@ export const taskHandlers = {
 			});
 	},
 	updateTaskDescription: (id: string, description: string, user_id: string) => {
+		description = description.trim();
 		isSaving.set(true);
 		toDoStore.update((tasks) => {
 			return tasks.map((task) => {
@@ -105,11 +106,49 @@ export const taskHandlers = {
 			.from('tasks')
 			.update({ desc: description })
 			.eq('id', id)
-			.then((data) => {
+			.then(() => {
 				isSaving.set(false);
 				setTimeout(() => {
 					isSaving.set(null);
 				}, 1000);
 			});
+	},
+	addMilestone: (milestones: milestone_t[], milestone: milestone_t, id: string) => {
+		const updatedmilestones = [ ...milestones, milestone ];
+		supabase.from('tasks').update({ milestones: updatedmilestones }).eq('id', id).then(() => {
+			isSaving.set(false);
+			setTimeout(() => {
+				isSaving.set(null);
+			}, 1000);
+		});
+		return updatedmilestones;
+	},
+	toggleMileStoneStatus: (milestones: milestone_t[], milestone: milestone_t, id: string) => {
+		const updatedmilestones = milestones.map((m) => {
+			if (m.name === milestone.name) {
+				return {
+					...m,
+					status: m.status === taskStatus.Done ? taskStatus.ToDo : taskStatus.Done
+				};
+			}
+			return m;
+		});
+		supabase.from('tasks').update({ milestones: updatedmilestones }).eq('id', id).then(() => {
+			isSaving.set(false);
+			setTimeout(() => {
+				isSaving.set(null);
+			}, 1000);
+		});
+		return updatedmilestones;
+	},
+	deleteMilestone: (milestones: milestone_t[], milestone: milestone_t, id: string) => {
+		const updatedmilestones = milestones.filter((m) => m.name !== milestone.name);
+		supabase.from('tasks').update({ milestones: updatedmilestones }).eq('id', id).then(() => {
+			isSaving.set(false);
+			setTimeout(() => {
+				isSaving.set(null);
+			}, 1000);
+		});
+		return updatedmilestones;
 	}
 };
