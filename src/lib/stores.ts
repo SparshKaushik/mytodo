@@ -3,6 +3,8 @@ import type { modalStore_t, task_t } from './types';
 import { cachedwritable } from 'svelte-cached-store';
 import { supabase } from '../supabase';
 import type { Session } from '@supabase/supabase-js';
+import toast from 'svelte-french-toast';
+import { goto } from '$app/navigation';
 
 export const isLoading = writable<boolean>(true);
 export const isSaving = writable<boolean | null>(null);
@@ -31,8 +33,10 @@ export const authHandlers = {
 				email: email,
 				password: password
 			})
-			.then((data) => {
-				console.log(data);
+			.then(() => {
+				toast.success('Account created successfully');
+				toast.success('Please check your email for verification');
+				goto('/login');
 			})
 			.catch((error) => {
 				console.log(error);
