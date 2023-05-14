@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { taskStatus, type modalStore_t, type task_t, type milestone_t } from '$lib/types';
+	import { taskStatus, type task_t, type newmilestone_t } from '$lib/types';
 	import { closeModal } from '$lib/utils';
 	import { onMount } from 'svelte';
 	import IconButton from '../IconButton.svelte';
@@ -12,10 +12,11 @@
 	let descriptionDiv: HTMLDivElement;
 	let editingTimeout: any;
 
-	let newMilestone: milestone_t = {
-		name: 'New Milestone',
+	let newMilestone: newmilestone_t = {
+		name: undefined,
 		status: taskStatus.ToDo
 	};
+	let milestoneDiv: HTMLDivElement;
 
 	function getTask() {
 		supabase
@@ -30,7 +31,11 @@
 						description: data.data[0].desc,
 						status: data.data[0].status,
 						createdAt: data.data[0].created_at,
-						milestones: data.data[0].milestones ? data.data[0].milestones.length === 0 ? undefined : data.data[0].milestones : undefined
+						milestones: data.data[0].milestones
+							? data.data[0].milestones.length === 0
+								? undefined
+								: data.data[0].milestones
+							: undefined
 					};
 				}
 				modalStore.update((value: any) => {
@@ -95,10 +100,14 @@
 					<line x1="14" y1="11" x2="14" y2="17" />
 				</svg>
 			</IconButton>
-			{#if !task.milestones}
+			{#if task.milestones === undefined || task.milestones.length === 0}
 				<IconButton
 					on:click={() => {
-						task.milestones = [];
+						task.milestones = task.milestones === undefined ? [] : undefined;
+						newMilestone.name = 'ok';
+						setTimeout(() => {
+							milestoneDiv?.focus();
+						}, 0);
 					}}
 				>
 					<svg
@@ -214,14 +223,7 @@
 					<div class="start">
 						<IconButton
 							on:click={() => {
-								let tempNewMileStone = { ...newMilestone };
-								if (task.milestones)
-									task.milestones = taskHandlers.addMilestone(
-										task.milestones,
-										tempNewMileStone,
-										task.id
-									);
-								newMilestone.name = '';
+								newMilestone.name = 'New Milestone';
 							}}
 						>
 							<svg viewBox="0 0 24 24">
@@ -229,27 +231,46 @@
 								<line x1="5" y1="12" x2="19" y2="12" />
 							</svg>
 						</IconButton>
-						<div
-							class="name"
-							contenteditable="true"
-							bind:innerText={newMilestone.name}
-							on:keypress={(e) => {
-								if (e.key === 'Enter') {
-									e.preventDefault();
-									let tempNewMileStone = { ...newMilestone };
-									if (task.milestones)
-										task.milestones = taskHandlers.addMilestone(
-											task.milestones,
-											tempNewMileStone,
-											task.id
-										);
-									newMilestone.name = '';
-								}
-							}}
-						>
-							New Milestone
-						</div>
+						{#if newMilestone.name !== undefined}
+							<div
+								class="name"
+								contenteditable="true"
+								bind:innerText={newMilestone.name}
+								bind:this={milestoneDiv}
+								on:keypress={(e) => {
+									if (e.key === 'Enter') {
+										e.preventDefault();
+										let tempNewMileStone = { ...newMilestone };
+										if (task.milestones)
+											// @ts-ignore
+											task.milestones = taskHandlers.addMilestone(
+												task.milestones,
+												tempNewMileStone,
+												task.id
+											);
+										newMilestone.name = 'New Milestone';
+									}
+								}}
+							>
+								New Milestone
+							</div>
+							<span class="milestone-tip">Press Enter to Add the Milestone</span>
+						{/if}
 					</div>
+					{#if newMilestone.name !== undefined}
+						<div class="end">
+							<IconButton
+								on:click={() => {
+									newMilestone.name = undefined;
+								}}
+							>
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+									<line x1="18" y1="6" x2="6" y2="18" />
+									<line x1="6" y1="6" x2="18" y2="18" />
+								</svg>
+							</IconButton>
+						</div>
+					{/if}
 				</div>
 			</div>
 		{/if}
@@ -331,7 +352,7 @@
 	}
 
 	.body {
-		height: 100%;
+		flex-grow: 1;
 		display: flex;
 		flex-direction: column;
 		overflow: auto;
@@ -357,6 +378,7 @@
 			display: flex;
 			flex-direction: column;
 			margin-top: 1rem;
+			flex-grow: 1;
 
 			&:only-child {
 				.milestone {
@@ -392,6 +414,8 @@
 					gap: 0.5rem;
 					width: 100%;
 
+					position: relative;
+
 					.name {
 						font-size: 1rem;
 						font-weight: 400;
@@ -401,6 +425,15 @@
 							border: 1px solid #a0a0a0;
 							border-radius: 0.25rem;
 						}
+					}
+
+					.milestone-tip {
+						position: absolute;
+						left: 2rem;
+						bottom: -1.25rem;
+						font-size: 0.75rem;
+						font-weight: 400;
+						color: #a0a0a0;
 					}
 				}
 

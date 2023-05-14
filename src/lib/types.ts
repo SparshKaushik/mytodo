@@ -14,6 +14,11 @@ export interface milestone_t {
 	status: taskStatus.ToDo | taskStatus.Done;
 }
 
+export interface newmilestone_t {
+	name: string | undefined;
+	status: taskStatus.ToDo | taskStatus.Done;
+}
+
 export enum taskStatus {
 	ToDo = 'todo',
 	Doing = 'doing',

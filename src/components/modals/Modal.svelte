@@ -80,7 +80,7 @@
 
 			.content {
 				width: inherit;
-				height: inherit;
+				min-height: inherit;
 
 				display: flex;
 				flex-direction: column;

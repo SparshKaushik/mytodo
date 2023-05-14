@@ -1,5 +1,5 @@
 import { supabase } from '../supabase';
-import { taskStatus, type milestone_t, type task_t } from './types';
+import { taskStatus, type milestone_t, type task_t, type newmilestone_t } from './types';
 import { isSaving, toDoStore } from './stores';
 import { closeModal } from './utils';
 
@@ -113,8 +113,13 @@ export const taskHandlers = {
 				}, 1000);
 			});
 	},
-	addMilestone: (milestones: milestone_t[], milestone: milestone_t, id: string) => {
-		const updatedmilestones = [ ...milestones, milestone ];
+	addMilestone: (milestones: milestone_t[], milestone: newmilestone_t, id: string) => {
+		if (milestone.name === undefined || milestone.name.trim() === '')
+			return milestones;
+		const updatedmilestones = [ ...milestones, {
+			name: milestone.name as string,
+			status: taskStatus.ToDo
+		}];
 		supabase.from('tasks').update({ milestones: updatedmilestones }).eq('id', id).then(() => {
 			isSaving.set(false);
 			setTimeout(() => {
