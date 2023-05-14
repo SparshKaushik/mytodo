@@ -38,8 +38,10 @@
 		});
 
 	onMount(() => {
-		$authStore ? isLoading.set(false) : goto('/login');
-		$authStore?.user.id && taskHandlers.getTasks($authStore.user.id);
+		setTimeout(() => {
+			$authStore ? isLoading.set(false) : goto('/login');
+			$authStore?.user.id && taskHandlers.getTasks($authStore.user.id);
+		}, 0);
 	});
 
 	function handleConsider(e: { detail: { items: Item[] } }, status: taskStatus) {
