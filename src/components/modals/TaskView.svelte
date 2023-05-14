@@ -104,7 +104,7 @@
 				<IconButton
 					on:click={() => {
 						task.milestones = task.milestones === undefined ? [] : undefined;
-						newMilestone.name = 'ok';
+						newMilestone.name = '';
 						setTimeout(() => {
 							milestoneDiv?.focus();
 						}, 0);
