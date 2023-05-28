@@ -79,7 +79,7 @@
 			overflow: auto;
 
 			@media screen and (max-width: 768px) {
-				min-width: 100vw;
+				min-width: 90vw;
 			}
 
 			.content {

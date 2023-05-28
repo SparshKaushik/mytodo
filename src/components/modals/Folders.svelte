@@ -28,11 +28,12 @@
 		folders = Object.values($userStore.folders);
 	}
 
-	window && window.addEventListener('keydown', (e) => {
-		if (e.key === 'ArrowDown') {
-			selectedIndex = selectedIndex === folders.length - 1 ? 0 : selectedIndex + 1;
-		}
-	})
+	window &&
+		window.addEventListener('keydown', (e) => {
+			if (e.key === 'ArrowDown') {
+				selectedIndex = selectedIndex === folders.length - 1 ? 0 : selectedIndex + 1;
+			}
+		});
 </script>
 
 <div class="FolderModal">
@@ -79,7 +80,7 @@
 					folderStore.set(folder.name);
 					closeModal();
 				}}
-				transition:fade={{duration: 100}}
+				transition:fade={{ duration: 100 }}
 			>
 				<div class="folder-name">{folder.icon}</div>
 				<div class="folder-name">{folder.name}</div>
@@ -127,6 +128,13 @@
 
 		overflow: auto;
 
+		// background: #0F0D13;
+		background-color: rgba($color: #000000, $alpha: 0.1);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		border-radius: 10px;
+		border: 1px solid rgba(255, 255, 255, 0.05);
+
 		@media screen and (max-width: 768px) {
 			min-width: 80vw;
 		}
@@ -159,7 +167,8 @@
 				transition: all 0.2s ease-in-out;
 				cursor: pointer;
 
-				&.selected, &:hover {
+				&.selected,
+				&:hover {
 					background-color: rgba(59, 56, 62, 0.5);
 				}
 
