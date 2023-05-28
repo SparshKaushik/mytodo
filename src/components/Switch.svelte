@@ -1,7 +1,7 @@
 <script lang="ts">
 	export let checked: boolean = false;
-	export let checkedText: string = "";
-	export let uncheckedText: string = "";
+	export let checkedText: string = '';
+	export let uncheckedText: string = '';
 </script>
 
 <div
@@ -38,7 +38,6 @@
 		cursor: pointer;
 
 		&.active {
-			
 			.toggle {
 				background-position: -25px 0;
 				transform: translateX(2.25rem);

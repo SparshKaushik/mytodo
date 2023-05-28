@@ -1,10 +1,12 @@
 <script lang="ts">
-	import { authHandlers, authStore, isSaving, modalStore } from '$lib/stores';
+	import { authStore, folderStore, isSaving, modalStore, userStore } from '$lib/stores';
+	import { authHandlers } from '$lib/model';
 	import { Popover, PopoverButton, PopoverPanel } from '@rgossiaux/svelte-headlessui';
 	import FlyIn from './Transitions/FlyIn.svelte';
 	import Loader from './Loader.svelte';
 	import NewTask from './modals/NewTask.svelte';
 	import Logo from './Logo.svelte';
+	import Folders from './modals/Folders.svelte';
 </script>
 
 <div class="navbar">
@@ -12,6 +14,26 @@
 		<div class="heading">
 			<Logo width="28px" height="28px" />
 			<span>uch Kare</span>
+		</div>
+		<div class="folders">
+			<div class="folder">{$folderStore}</div>
+			<div class="hint">Press / to Open Folders</div>
+			<!-- svelte-ignore a11y-click-events-have-key-events -->
+			<div
+				class="folderMobile"
+				on:click={() => {
+					modalStore.set({
+						component: Folders,
+						props: {
+							isStandalone: true
+						},
+						isLoading: false
+					});
+				}}
+			>
+				{$folderStore}
+			</div>
+			<div class="hintMobile">Click Above to Open Folders</div>
 		</div>
 		<div class="saving">
 			{#if $isSaving}
@@ -65,8 +87,8 @@
 						/></svg
 					>
 					<div class="info">
+						<span>{$userStore?.name}</span>
 						<span>{$authStore?.user.email}</span>
-						<span>{$authStore?.user.last_sign_in_at}</span>
 					</div>
 				</div>
 			</PopoverButton>
@@ -74,11 +96,12 @@
 				<FlyIn>
 					<div class="popoverProfile">
 						<!-- svelte-ignore a11y-click-events-have-key-events -->
-						<div class="item" on:click={
-							() => {
+						<div
+							class="item"
+							on:click={() => {
 								authHandlers.logout();
-							}
-						}>
+							}}
+						>
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								width="24"
@@ -120,6 +143,10 @@
 
 			gap: 1rem;
 
+			@media screen and (max-width: 768px) {
+				gap: 0.5rem;
+			}
+
 			div {
 				display: flex;
 
@@ -142,6 +169,57 @@
 
 			.heading {
 				font-size: 1.25rem;
+
+				@media screen and (max-width: 768px) {
+					span {
+						display: none;
+					}
+				}
+			}
+
+			.folders {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				gap: 0.25rem;
+
+				.folder,
+				.folderMobile {
+					font-size: 0.9rem;
+					line-height: 0.9rem;
+				}
+
+				@media screen and (max-width: 768px) {
+					.folder,
+					.hint {
+						display: none;
+					}
+
+					.folderMobile,
+					.hintMobile {
+						display: block !important;
+					}
+				}
+
+				.hint {
+					font-family: monospace;
+					font-size: 0.75rem;
+					line-height: 0.75rem;
+					color: #aaa;
+					letter-spacing: -0.05rem;
+				}
+
+				.folderMobile,
+				.hintMobile {
+					display: none;
+				}
+
+				.hintMobile {
+					font-size: 0.75rem;
+					line-height: 0.75rem;
+					color: #aaa;
+					letter-spacing: -0.05rem;
+				}
 			}
 		}
 

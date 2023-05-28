@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { taskHandlers } from '$lib/model';
-	import { authStore } from '$lib/stores';
+	import { authStore, folderStore } from '$lib/stores';
 	import { closeModal } from '$lib/utils';
 	import IconButton from '../IconButton.svelte';
 	import Input from '../Input.svelte';
@@ -32,7 +32,11 @@
 		<Input type="textarea" placeholder="Description" bind:inputValue={desc} />
 	</div>
 	<div class="bottom">
-		<button on:click={()=>{$authStore?.user.id && taskHandlers.addTask(name, desc, $authStore?.user.id)}}>Add</button>
+		<button
+			on:click={() => {
+				$authStore?.user.id && taskHandlers.addTask(name, desc, $authStore?.user.id, $folderStore);
+			}}>Add</button
+		>
 	</div>
 </div>
 

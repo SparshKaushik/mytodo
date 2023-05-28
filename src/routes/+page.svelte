@@ -3,17 +3,19 @@
 
 	import { dndzone, type Item } from 'svelte-dnd-action';
 	import { goto } from '$app/navigation';
-	import { authStore, isLoading, modalStore, toDoStore } from '$lib/stores';
+	import { authStore, folderStore, isEditing, isLoading, modalStore, toDoStore, userStore } from '$lib/stores';
 	import { onMount } from 'svelte';
 	import NavBar from '../components/NavBar.svelte';
 	import { flip } from 'svelte/animate';
-	import { taskHandlers } from '$lib/model';
-	import { taskStatus, type taskList_t } from '$lib/types';
+	import { taskHandlers, userHandlers } from '$lib/model';
+	import { taskStatus, type taskList_t, type modalStore_t } from '$lib/types';
 	import TaskView from '../components/modals/TaskView.svelte';
 	import { visualDate } from '$lib/utils';
+	import Folders from '../components/modals/Folders.svelte';
 
 	const flipDurationMs = 300;
 	const dropTargetStyle = {};
+	let modal: modalStore_t | null, isediting: boolean;
 
 	let taskList: taskList_t = {
 		todo: [],
@@ -37,11 +39,40 @@
 			return { id: task.id, name: task.name };
 		});
 
+	$: modal = $modalStore;
+	$: isediting = $isEditing;
+
+	$: if ($folderStore) {
+		isLoading.set(true);
+		$authStore && taskHandlers.getTasks($authStore.user.id, $folderStore);
+	}
 	onMount(() => {
 		setTimeout(() => {
 			$authStore ? isLoading.set(false) : goto('/login');
-			$authStore?.user.id && taskHandlers.getTasks($authStore.user.id);
+			$authStore?.user.id && taskHandlers.getTasks($authStore.user.id, $folderStore);
 		}, 0);
+		window &&	
+			document.addEventListener('keypress', (e) => {
+				if (e.key === '/') {
+					const activeElement = document.activeElement;
+					if (
+						// @ts-ignore
+						activeElement?.contentEditable !== 'true' &&
+						activeElement?.tagName !== 'INPUT' &&
+						activeElement?.tagName !== 'TEXTAREA' &&
+						!isediting &&
+						!modal
+					) {
+						modalStore.set({
+							component: Folders,
+							props: {
+								isStandalone: true
+							},
+							isLoading: false
+						});
+					}
+				}
+			});
 	});
 
 	function handleConsider(e: { detail: { items: Item[] } }, status: taskStatus) {
@@ -62,13 +93,13 @@
 	}
 
 	function getDateTime(id: string) {
-		return $toDoStore.find(task => task.id === id)?.createdAt || '';
+		return $toDoStore.find((task) => task.id === id)?.createdAt || '';
 	}
 </script>
 
 <NavBar />
 <section class="main">
-	{#each [taskStatus.ToDo, taskStatus.Doing, taskStatus.Done] as status}	
+	{#each [taskStatus.ToDo, taskStatus.Doing, taskStatus.Done] as status}
 		<div class="todolist">
 			<div class="heading">{status}</div>
 			<section
@@ -79,15 +110,17 @@
 			>
 				{#each taskList[status] as item (item.id)}
 					<!-- svelte-ignore a11y-click-events-have-key-events -->
-					<div class="task" animate:flip={{ duration: flipDurationMs }} on:click={
-						() => {
+					<div
+						class="task"
+						animate:flip={{ duration: flipDurationMs }}
+						on:click={() => {
 							modalStore.set({
 								component: TaskView,
 								props: { taskId: item.id },
 								isLoading: true
-							})
-						}
-					}>
+							});
+						}}
+					>
 						<div class="details">
 							<span class="name">{item.name}</span>
 							<span class="created">{visualDate(new Date(getDateTime(item.id)))}</span>

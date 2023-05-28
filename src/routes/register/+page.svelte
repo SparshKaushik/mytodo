@@ -1,10 +1,11 @@
 <script lang="ts">
 	import './page.scss';
 	import { goto } from '$app/navigation';
-	import { authHandlers, authStore, isLoading } from '$lib/stores';
+	import { authStore, isLoading } from '$lib/stores';
 	import Input from '../../components/Input.svelte';
 	import Button from '../../components/Button.svelte';
 	import toast from 'svelte-french-toast';
+	import { authHandlers } from '$lib/model';
 
 	$: if ($authStore) {
 		goto('/');

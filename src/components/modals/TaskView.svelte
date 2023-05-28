@@ -4,11 +4,10 @@
 	import { onMount } from 'svelte';
 	import IconButton from '../IconButton.svelte';
 	import { supabase } from '../../supabase';
-	import { authStore, isSaving, modalStore } from '$lib/stores';
+	import { authStore, folderStore, isEditing, modalStore } from '$lib/stores';
 	import { taskHandlers } from '$lib/model';
 
 	let task: task_t;
-	let isEditing: boolean = false;
 	let descriptionDiv: HTMLDivElement;
 	let editingTimeout: any;
 
@@ -35,7 +34,8 @@
 							? data.data[0].milestones.length === 0
 								? undefined
 								: data.data[0].milestones
-							: undefined
+							: undefined,
+						folder: data.data[0].folder
 					};
 				}
 				modalStore.update((value: any) => {
@@ -59,7 +59,7 @@
 			<span class="created">Created At : {new Date(task.createdAt).toLocaleString()}</span>
 		</span>
 		<div class="end">
-			{#if isEditing}
+			{#if $isEditing}
 				<div class="editing">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -80,7 +80,7 @@
 			{/if}
 			<IconButton
 				on:click={() => {
-					$authStore?.user.id && taskHandlers.deleteTask(task?.id, $authStore?.user.id);
+					$authStore?.user.id && taskHandlers.deleteTask(task?.id, $authStore?.user.id, $folderStore);
 				}}
 			>
 				<svg
@@ -144,9 +144,9 @@
 			<div
 				class="description {isEditing ? 'editing' : ''}"
 				on:dblclick={() => {
-					isEditing = true;
+					isEditing.set(true);
 				}}
-				contenteditable={isEditing}
+				contenteditable={$isEditing}
 				on:blur={() => {
 					$authStore?.user.id &&
 						taskHandlers.updateTaskDescription(
@@ -154,7 +154,7 @@
 							descriptionDiv.innerText,
 							$authStore?.user.id
 						);
-					isEditing = false;
+					isEditing.set(false);
 				}}
 				bind:this={descriptionDiv}
 				on:input={() => {

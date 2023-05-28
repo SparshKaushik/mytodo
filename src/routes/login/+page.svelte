@@ -2,11 +2,12 @@
 	import './page.scss';
 
 	import { goto } from '$app/navigation';
-	import { authHandlers, authStore, isLoading } from '$lib/stores';
+	import { authStore, isLoading } from '$lib/stores';
 	import Input from '../../components/Input.svelte';
 	import Button from '../../components/Button.svelte';
 	import FlyIn from '../../components/Transitions/FlyIn.svelte';
 	import { onMount } from 'svelte';
+	import { authHandlers } from '$lib/model';
 
 	$: $authStore ? goto('/') : onMount(() => isLoading.set(false));
 

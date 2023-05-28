@@ -31,16 +31,20 @@
 	{#if $modalStore && $modalStore.component}
 		<div class="ModalContainer" in:fade={{ duration: 200 }} out:fade={{ duration: 200 }}>
 			<FlyIn>
-				<div class="Modal">
-					{#if $modalStore?.isLoading}
-						<div class="modal-loading">
-							<Loader />
+				{#if $modalStore.props.isStandalone}
+					<svelte:component this={ModalComponent} />
+				{:else}
+					<div class="Modal">
+						{#if $modalStore?.isLoading}
+							<div class="modal-loading">
+								<Loader />
+							</div>
+						{/if}
+						<div class="content {$modalStore.isLoading ? 'isloading' : ''}">
+							<svelte:component this={ModalComponent} />
 						</div>
-					{/if}
-					<div class="content {$modalStore.isLoading ? 'isloading' : ''}">
-						<svelte:component this={ModalComponent} />
 					</div>
-				</div>
+				{/if}
 			</FlyIn>
 		</div>
 	{/if}
@@ -75,7 +79,7 @@
 			overflow: auto;
 
 			@media screen and (max-width: 768px) {
-				min-width: 80vw;
+				min-width: 100vw;
 			}
 
 			.content {

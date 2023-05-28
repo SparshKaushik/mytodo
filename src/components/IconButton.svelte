@@ -1,8 +1,10 @@
 <script lang="ts">
+	let className: string = "";
+	export {className as class};
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div on:click>
+<div on:click class={className}>
 	<slot />
 </div>
 
@@ -21,7 +23,7 @@
 		transition-duration: 200ms;
 
 		&:hover {
-			background-color: #36343b;
+			background-color: rgba(255, 255, 255, 0.2);
 		}
 	}
 </style>

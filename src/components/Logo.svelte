@@ -6,8 +6,8 @@
 <svg
 	xmlns="http://www.w3.org/2000/svg"
 	xmlns:xlink="http://www.w3.org/1999/xlink"
-	width={width}
-	height={height}
+	{width}
+	{height}
 	x="0px"
 	y="0px"
 	viewBox="0 0 69.3 95.3"

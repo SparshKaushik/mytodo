@@ -5,10 +5,14 @@
 	import { Toaster } from 'svelte-french-toast';
 	import './layout.scss';
 	import Modal from '../components/modals/Modal.svelte';
+	import { userHandlers } from '$lib/model';
 
 	onMount(() => {
 		supabase.auth.onAuthStateChange((event, session) => {
 			authStore.set(session);
+			if (session) {
+				userHandlers.getUserData(session.user.id);
+			}
 		});
 	});
 </script>

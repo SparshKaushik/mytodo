@@ -1,4 +1,10 @@
-import type { Item } from "svelte-dnd-action";
+import type { Item } from 'svelte-dnd-action';
+
+export interface user_t {
+	id: string;
+	name: string;
+	folders: folder_t[];
+}
 
 export interface task_t {
 	id: string;
@@ -7,6 +13,7 @@ export interface task_t {
 	status: string;
 	createdAt: Date;
 	milestones?: milestone_t[];
+	folder: string;
 }
 
 export interface milestone_t {
@@ -35,4 +42,9 @@ export interface taskList_t {
 	todo: Item[];
 	doing: Item[];
 	done: Item[];
+}
+
+export interface folder_t {
+	icon: string;
+	name: string;
 }
