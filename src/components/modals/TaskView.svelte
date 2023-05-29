@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { taskStatus, type task_t, type newmilestone_t } from '$lib/types';
+	import { taskStatus, type task_t, type newmilestone_t, type milestone_t } from '$lib/types';
 	import { closeModal } from '$lib/utils';
 	import { onMount } from 'svelte';
 	import IconButton from '../IconButton.svelte';
@@ -8,6 +8,7 @@
 	import { taskHandlers } from '$lib/model';
 
 	let task: task_t;
+	let sortedMilestones: milestone_t[];
 	let descriptionDiv: HTMLDivElement;
 	let editingTimeout: any;
 
@@ -47,6 +48,17 @@
 			});
 	}
 
+	$: sortedMilestones = task && task.milestones ? [...task.milestones] : [];
+	$: sortedMilestones && sortedMilestones.sort((a: milestone_t, b: milestone_t) => {
+		if (a.status === taskStatus.Done && b.status === taskStatus.ToDo) {
+			return 1;
+		} else if (a.status === taskStatus.ToDo && b.status === taskStatus.Done) {
+			return -1;
+		} else {
+			return 0;
+		}
+	});
+
 	onMount(() => {
 		getTask();
 	});
@@ -80,7 +92,8 @@
 			{/if}
 			<IconButton
 				on:click={() => {
-					$authStore?.user.id && taskHandlers.deleteTask(task?.id, $authStore?.user.id, $folderStore);
+					$authStore?.user.id &&
+						taskHandlers.deleteTask(task?.id, $authStore?.user.id, $folderStore);
 				}}
 			>
 				<svg
@@ -174,7 +187,7 @@
 		{/if}
 		{#if task.milestones}
 			<div class="milestones">
-				{#each task.milestones as milestone}
+				{#each sortedMilestones as milestone}
 					<div class="milestone">
 						<div class="start">
 							<!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -224,6 +237,17 @@
 						<IconButton
 							on:click={() => {
 								newMilestone.name = 'New Milestone';
+								setTimeout(() => {
+									milestoneDiv?.focus();
+									const range = document.createRange();
+									const newMilestoneDiv = document.querySelector(
+										'.milestone .start .name[contentEditable]'
+									);
+									newMilestoneDiv && range.selectNodeContents(newMilestoneDiv);
+									const selection = window.getSelection();
+									selection && selection.removeAllRanges();
+									selection && selection.addRange(range);
+								}, 100);
 							}}
 						>
 							<svg viewBox="0 0 24 24">
@@ -248,7 +272,15 @@
 												tempNewMileStone,
 												task.id
 											);
-										newMilestone.name = 'New Milestone';
+										milestoneDiv?.focus();
+										const range = document.createRange();
+										const newMilestoneDiv = document.querySelector(
+											'.milestone .start .name[contentEditable]'
+										);
+										newMilestoneDiv && range.selectNodeContents(newMilestoneDiv);
+										const selection = window.getSelection();
+										selection && selection.removeAllRanges();
+										selection && selection.addRange(range);
 									}
 								}}
 							>

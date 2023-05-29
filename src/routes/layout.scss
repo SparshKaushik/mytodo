@@ -6,6 +6,21 @@
 
 * {
 	font-family: 'Poppins';
+	scrollbar-width: auto;
+	scrollbar-color: #36343b rgba(0, 0, 0, 0);
+	
+	&::-webkit-scrollbar {
+		width: 8px;
+	}
+	
+	&::-webkit-scrollbar-track {
+		background: rgba($color: #000000, $alpha: 0);
+	}
+	
+	&::-webkit-scrollbar-thumb {
+		background-color: #36343b;
+		border-radius: 20px;
+	}
 }
 
 #root {
