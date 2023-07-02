@@ -11,7 +11,7 @@
 		supabase.auth.onAuthStateChange((event, session) => {
 			authStore.set(session);
 			if (session) {
-				userHandlers.getUserData(session.user.id);
+				userHandlers.getUserData(session.user.id, session.user.user_metadata);
 			}
 		});
 	});

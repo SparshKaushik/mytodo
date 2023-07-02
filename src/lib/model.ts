@@ -185,7 +185,7 @@ export const taskHandlers = {
 };
 
 export const userHandlers = {
-	getUserData: (user_id: string) => {
+	getUserData: (user_id: string, metadata: any) => {
 		supabase
 			.from('users')
 			.select('*')
@@ -198,6 +198,8 @@ export const userHandlers = {
 						name: user.name,
 						folders: JSON.parse(user.folders)
 					});
+				} else {
+					metadata && supabase.from('users').insert({ id: user_id, name: ''});
 				}
 			});
 	}
@@ -219,7 +221,7 @@ export const folderHandlers = {
 			})
 			.eq('id', user_id)
 			.then(() => {
-				userHandlers.getUserData(user_id);
+				userHandlers.getUserData(user_id, null);
 				closeModal();
 				isSaving.set(false);
 				setTimeout(() => {
@@ -238,7 +240,7 @@ export const folderHandlers = {
 				if (folders.length > 0) {
 					folderStore.set(folders[0].name);
 				}
-				userHandlers.getUserData(user_id);
+				userHandlers.getUserData(user_id, null);
 				closeModal();
 				isSaving.set(false);
 				setTimeout(() => {
@@ -264,7 +266,12 @@ export const authHandlers = {
 		await supabase.auth
 			.signUp({
 				email: email,
-				password: password
+				password: password,
+				options: {
+					data: {
+						name: name
+					}
+				}
 			})
 			.then((user) => {
 				toast.success('Account created successfully');

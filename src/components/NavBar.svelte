@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { authStore, folderStore, isSaving, modalStore, userStore } from '$lib/stores';
+	import { authStore, folderStore, isSaving, modalStore, toDoStore, userStore } from '$lib/stores';
 	import { authHandlers } from '$lib/model';
 	import { Popover, PopoverButton, PopoverPanel } from '@rgossiaux/svelte-headlessui';
 	import FlyIn from './Transitions/FlyIn.svelte';
@@ -16,11 +16,9 @@
 			<span>uch Kare</span>
 		</div>
 		<div class="folders">
-			<div class="folder">{$folderStore}</div>
-			<div class="hint">Press / to Open Folders</div>
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<div
-				class="folderMobile"
+				class="folder"
 				on:click={() => {
 					modalStore.set({
 						component: Folders,
@@ -183,19 +181,16 @@
 				justify-content: center;
 				gap: 0.25rem;
 
-				.folder,
-				.folderMobile {
+				.folder {
 					font-size: 0.9rem;
 					line-height: 0.9rem;
 				}
 
 				@media screen and (max-width: 768px) {
-					.folder,
 					.hint {
 						display: none;
 					}
 
-					.folderMobile,
 					.hintMobile {
 						display: block !important;
 					}
@@ -209,7 +204,6 @@
 					letter-spacing: -0.05rem;
 				}
 
-				.folderMobile,
 				.hintMobile {
 					display: none;
 				}

@@ -4,8 +4,13 @@
 	import { onMount } from 'svelte';
 	import IconButton from '../IconButton.svelte';
 	import { supabase } from '../../supabase';
-	import { authStore, folderStore, isEditing, modalStore } from '$lib/stores';
+	import { authStore, folderStore, isEditing, modalStore, userStore } from '$lib/stores';
 	import { taskHandlers } from '$lib/model';
+	import { Menu, MenuButton, MenuItem, MenuItems } from '@rgossiaux/svelte-headlessui';
+	import Button from '../Button.svelte';
+	import FlyIn from '../Transitions/FlyIn.svelte';
+	import Icon from '../Icon.svelte';
+	import Folders from './Folders.svelte';
 
 	let task: task_t;
 	let sortedMilestones: milestone_t[];
@@ -49,15 +54,16 @@
 	}
 
 	$: sortedMilestones = task && task.milestones ? [...task.milestones] : [];
-	$: sortedMilestones && sortedMilestones.sort((a: milestone_t, b: milestone_t) => {
-		if (a.status === taskStatus.Done && b.status === taskStatus.ToDo) {
-			return 1;
-		} else if (a.status === taskStatus.ToDo && b.status === taskStatus.Done) {
-			return -1;
-		} else {
-			return 0;
-		}
-	});
+	$: sortedMilestones &&
+		sortedMilestones.sort((a: milestone_t, b: milestone_t) => {
+			if (a.status === taskStatus.Done && b.status === taskStatus.ToDo) {
+				return 1;
+			} else if (a.status === taskStatus.ToDo && b.status === taskStatus.Done) {
+				return -1;
+			} else {
+				return 0;
+			}
+		});
 
 	onMount(() => {
 		getTask();
@@ -90,53 +96,111 @@
 					<span> Editing </span>
 				</div>
 			{/if}
-			<IconButton
-				on:click={() => {
-					$authStore?.user.id &&
-						taskHandlers.deleteTask(task?.id, $authStore?.user.id, $folderStore);
-				}}
-			>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<polyline points="3 6 5 6 21 6" />
-					<path
-						d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
-					/>
-					<line x1="10" y1="11" x2="10" y2="17" />
-					<line x1="14" y1="11" x2="14" y2="17" />
-				</svg>
-			</IconButton>
-			{#if task.milestones === undefined || task.milestones.length === 0}
-				<IconButton
-					on:click={() => {
-						task.milestones = task.milestones === undefined ? [] : undefined;
-						newMilestone.name = '';
-						setTimeout(() => {
-							milestoneDiv?.focus();
-						}, 0);
-					}}
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-					>
-						<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
-						<line x1="4" y1="22" x2="4" y2="15" />
-					</svg>
-				</IconButton>
-			{/if}
+			<Menu class="menu">
+				<MenuButton>
+					<IconButton>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+						>
+							<circle cx="12" cy="12" r="1" />
+							<circle cx="12" cy="5" r="1" />
+							<circle cx="12" cy="19" r="1" />
+						</svg>
+					</IconButton>
+				</MenuButton>
+				<MenuItems>
+					<FlyIn class="menu-items">
+						<MenuItem class="menu-item">
+							<!-- svelte-ignore a11y-click-events-have-key-events -->
+							<Icon
+								on:click={() => {
+									$authStore?.user.id &&
+										taskHandlers.deleteTask(task?.id, $authStore?.user.id, $folderStore);
+								}}
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									stroke-linejoin="round"
+								>
+									<polyline points="3 6 5 6 21 6" />
+									<path
+										d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+									/>
+									<line x1="10" y1="11" x2="10" y2="17" />
+									<line x1="14" y1="11" x2="14" y2="17" />
+								</svg>
+							</Icon>
+							<span>Delete Task</span>
+						</MenuItem>
+						{#if task.milestones === undefined || task.milestones.length === 0}
+							<MenuItem
+								class="menu-item"
+								on:click={() => {
+									task.milestones = task.milestones === undefined ? [] : undefined;
+									newMilestone.name = '';
+									setTimeout(() => {
+										milestoneDiv?.focus();
+									}, 0);
+								}}
+							>
+								<Icon>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									>
+										<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+										<line x1="4" y1="22" x2="4" y2="15" />
+									</svg>
+								</Icon>
+								<span>Add Milestone</span>
+							</MenuItem>
+						{/if}
+						<!-- {#if $userStore.folders}
+							<MenuItem
+								class="menu-item"
+								on:click={() => {
+									
+								}}
+							>
+								<Icon>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									>
+										<g fill="none" fill-rule="evenodd">
+											<path
+												d="M18 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8c0-1.1.9-2 2-2h5M15 3h6v6M10 14L20.2 3.8"
+											/>
+										</g>
+									</svg>
+								</Icon>
+								<span>Move to Folder</span>
+							</MenuItem>
+						{/if} -->
+						<!-- <MenuItem class="menu-item"></MenuItem> -->
+					</FlyIn>
+				</MenuItems>
+			</Menu>
 			<IconButton on:click={closeModal}>
 				<svg
 					viewBox="0 0 24 24"
@@ -335,6 +399,15 @@
 			align-items: center;
 
 			gap: 0.5rem;
+
+			:global(button) {
+				padding: 0;
+				background: none;
+				font-size: 1rem;
+
+				display: flex;
+				align-items: center;
+			}
 
 			.editing {
 				display: flex;

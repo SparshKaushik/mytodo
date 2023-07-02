@@ -99,3 +99,43 @@ svg {
 	stroke-linecap: round;
 	stroke-linejoin: round;
 }
+
+.menu {
+	position: relative;
+
+	.menu-items {
+		position: absolute;
+		top: 100%;
+		right: 30%;
+		min-width: 10rem;
+		
+		display: flex;
+		flex-direction: column;
+
+		background-color: #2B2930;
+
+		border-radius: 10px;
+
+		.menu-item {
+			display: grid;
+			grid-template-columns: min-content 1fr;
+			align-items: center;
+			gap: 0.5rem;
+
+			min-width: inherit;
+			width: max-content;
+
+			padding: 0.5rem 1rem;
+			cursor: pointer;
+
+			transition: all;
+			transition-duration: 300ms;
+
+			border-radius: 10px;
+
+			&:hover {
+				background-color: #938f994d;
+			}
+		}
+	}
+}
