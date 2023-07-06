@@ -181,6 +181,22 @@ export const taskHandlers = {
 				}, 1000);
 			});
 		return updatedmilestones;
+	},
+	changeFolder: (folder: string, id: string, user_id: string) => {
+		isSaving.set(true);
+		supabase
+			.from('tasks')
+			.update({ folder })
+			.eq('id', id)
+			.eq('owner', user_id)
+			.then(() => {
+				taskHandlers.getTasks(user_id, folder);
+				closeModal();
+				isSaving.set(false);
+				setTimeout(() => {
+					isSaving.set(null);
+				}, 1000);
+			});
 	}
 };
 
@@ -199,7 +215,7 @@ export const userHandlers = {
 						folders: JSON.parse(user.folders)
 					});
 				} else {
-					metadata && supabase.from('users').insert({ id: user_id, name: ''});
+					metadata && supabase.from('users').insert({ id: user_id, name: metadata.name ? metadata.name : ''});
 				}
 			});
 	}

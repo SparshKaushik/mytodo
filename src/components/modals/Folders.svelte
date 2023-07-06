@@ -2,18 +2,25 @@
 	import { onMount } from 'svelte';
 	import IconButton from '../IconButton.svelte';
 	import Input from '../Input.svelte';
-	import { folderStore, isSaving, userStore } from '$lib/stores';
+	import { folderStore, isSaving, modalStore, userStore } from '$lib/stores';
 	import { closeModal } from '$lib/utils';
-	import { folderHandlers } from '$lib/model';
+	import { folderHandlers, taskHandlers } from '$lib/model';
 	import type { folder_t } from '$lib/types';
 	import { fade } from 'svelte/transition';
+	import { get } from 'svelte/store';
 
 	let folderInput: any;
 	let inputValue: string;
 	let folders: folder_t[] = [];
 	let selectedIndex = 0;
+	let isChangingFolder = false;
+	let taskid: string;
 
 	onMount(() => {
+		if (get(modalStore)?.props.isChangingFolder) {
+			isChangingFolder = true;
+			taskid = get(modalStore)?.props.taskId;
+		}
 		setTimeout(() => {
 			folderInput.focusAction();
 		}, 100);
@@ -21,9 +28,9 @@
 	});
 
 	$: if (inputValue) {
-		folders = Object.values($userStore.folders).filter((folder) =>
-			folder.name.toLowerCase().includes(inputValue.toLowerCase())
-		);
+		folders = Object.values($userStore.folders)
+			.filter((folder) => folder.name.toLowerCase().includes(inputValue.toLowerCase()))
+			.sort((a, b) => a.name.localeCompare(b.name));
 	} else {
 		folders = Object.values($userStore.folders);
 	}
@@ -32,9 +39,17 @@
 		window.addEventListener('keydown', (e) => {
 			if (e.key === 'ArrowDown') {
 				selectedIndex = selectedIndex === folders.length - 1 ? 0 : selectedIndex + 1;
+			} else if (e.key === 'ArrowUp') {
+				selectedIndex = selectedIndex === 0 ? folders.length - 1 : selectedIndex - 1;
 			}
 		});
 </script>
+
+{#if isChangingFolder}
+	<center style="font-size: 1.1rem; font-weight: 500;padding: 1rem 0;">
+		Move "{get(modalStore)?.props.taskName}" to
+	</center>
+{/if}
 
 <div class="FolderModal">
 	<div class="input-wrapper">
@@ -43,11 +58,23 @@
 			bind:this={folderInput}
 			bind:inputValue
 			onEnter={() => {
-				folderStore.set(folders[selectedIndex]?.name);
-				closeModal();
+				if (folders[selectedIndex]?.name) {
+					if (isChangingFolder) {
+						taskHandlers.changeFolder(folders[selectedIndex]?.name, taskid, $userStore.id);
+					}
+					folderStore.set(folders[selectedIndex]?.name);
+					closeModal();
+				} else if (inputValue) {
+					if (isChangingFolder) {
+						return;
+					}
+					folderHandlers.addFolder(inputValue, $userStore.folders, $userStore.id);
+					folderStore.set(inputValue);
+					closeModal();
+				}
 			}}
 		/>
-		{#if (!Object.values($userStore.folders).find((folder) => folder.name === inputValue) || $isSaving) && inputValue}
+		{#if (!Object.values($userStore.folders).find((folder) => folder.name === inputValue) || $isSaving) && inputValue && !isChangingFolder}
 			<IconButton
 				class="add-folder"
 				on:click={() => {
@@ -77,6 +104,9 @@
 			<div
 				class="folder {index === selectedIndex && 'selected'}"
 				on:click={() => {
+					if (isChangingFolder) {
+						taskHandlers.changeFolder(folder.name, taskid, $userStore.id);
+					}
 					folderStore.set(folder.name);
 					closeModal();
 				}}
@@ -167,8 +197,7 @@
 				transition: all 0.2s ease-in-out;
 				cursor: pointer;
 
-				&.selected,
-				&:hover {
+				&.selected {
 					background-color: rgba(59, 56, 62, 0.5);
 				}
 

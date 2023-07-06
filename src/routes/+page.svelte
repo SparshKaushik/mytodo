@@ -66,7 +66,7 @@
 						modalStore.set({
 							component: Folders,
 							props: {
-								isStandalone: true
+								isStandalone: true,
 							},
 							isLoading: false
 						});

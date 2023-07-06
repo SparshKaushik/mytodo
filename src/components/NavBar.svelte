@@ -31,6 +31,7 @@
 			>
 				{$folderStore}
 			</div>
+			<div class="hint">Press / to Open Folders</div>
 			<div class="hintMobile">Click Above to Open Folders</div>
 		</div>
 		<div class="saving">

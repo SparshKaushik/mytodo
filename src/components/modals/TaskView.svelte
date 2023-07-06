@@ -170,11 +170,19 @@
 								<span>Add Milestone</span>
 							</MenuItem>
 						{/if}
-						<!-- {#if $userStore.folders}
+						{#if $userStore.folders.length > 1}
 							<MenuItem
 								class="menu-item"
 								on:click={() => {
-									
+									modalStore.set({
+										component: Folders,
+										props: {
+											isChangingFolder: true,
+											taskId: task.id,
+											taskName: task.name,
+										},
+										isLoading: false,
+									})
 								}}
 							>
 								<Icon>
@@ -196,7 +204,7 @@
 								</Icon>
 								<span>Move to Folder</span>
 							</MenuItem>
-						{/if} -->
+						{/if}
 						<!-- <MenuItem class="menu-item"></MenuItem> -->
 					</FlyIn>
 				</MenuItems>
