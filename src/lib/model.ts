@@ -168,6 +168,42 @@ export const taskHandlers = {
 			});
 		return updatedmilestones;
 	},
+	moveMilestoneUp: (milestones: milestone_t[], milestone: milestone_t, id: string) => {
+		const index = milestones.findIndex((m) => m.name === milestone.name);
+		if (index === 0) return milestones;
+		const updatedmilestones = [...milestones];
+		updatedmilestones[index] = updatedmilestones[index - 1];
+		updatedmilestones[index - 1] = milestone;
+		supabase
+			.from('tasks')
+			.update({ milestones: updatedmilestones })
+			.eq('id', id)
+			.then(() => {
+				isSaving.set(false);
+				setTimeout(() => {
+					isSaving.set(null);
+				}, 1000);
+			});
+		return updatedmilestones;
+	},
+	moveMilestoneDown: (milestones: milestone_t[], milestone: milestone_t, id: string) => {
+		const index = milestones.findIndex((m) => m.name === milestone.name);
+		if (index === milestones.length - 1) return milestones;
+		const updatedmilestones = [...milestones];
+		updatedmilestones[index] = updatedmilestones[index + 1];
+		updatedmilestones[index + 1] = milestone;
+		supabase
+			.from('tasks')
+			.update({ milestones: updatedmilestones })
+			.eq('id', id)
+			.then(() => {
+				isSaving.set(false);
+				setTimeout(() => {
+					isSaving.set(null);
+				}, 1000);
+			});
+		return updatedmilestones;
+	},
 	deleteMilestone: (milestones: milestone_t[], milestone: milestone_t, id: string) => {
 		const updatedmilestones = milestones.filter((m) => m.name !== milestone.name);
 		supabase
@@ -215,7 +251,10 @@ export const userHandlers = {
 						folders: JSON.parse(user.folders)
 					});
 				} else {
-					metadata && supabase.from('users').insert({ id: user_id, name: metadata.name ? metadata.name : ''});
+					metadata &&
+						supabase
+							.from('users')
+							.insert({ id: user_id, name: metadata.name ? metadata.name : '' });
 				}
 			});
 	}

@@ -3,15 +3,17 @@
 
 	import { dndzone, type Item } from 'svelte-dnd-action';
 	import { goto } from '$app/navigation';
-	import { authStore, folderStore, isEditing, isLoading, modalStore, toDoStore, userStore } from '$lib/stores';
-	import { onMount } from 'svelte';
+	import { authStore, folderStore, isEditing, isLoading, modalStore, toDoStore } from '$lib/stores';
+	import { onDestroy, onMount } from 'svelte';
 	import NavBar from '../components/NavBar.svelte';
 	import { flip } from 'svelte/animate';
-	import { taskHandlers, userHandlers } from '$lib/model';
+	import { taskHandlers } from '$lib/model';
 	import { taskStatus, type taskList_t, type modalStore_t } from '$lib/types';
 	import TaskView from '../components/modals/TaskView.svelte';
 	import { visualDate } from '$lib/utils';
 	import Folders from '../components/modals/Folders.svelte';
+	import { supabase } from '../supabase';
+	import Resetpwd from '../components/modals/Resetpwd.svelte';
 
 	const flipDurationMs = 300;
 	const dropTargetStyle = {};
@@ -42,16 +44,33 @@
 	$: modal = $modalStore;
 	$: isediting = $isEditing;
 
+	let tasksChannel: any;
+
 	$: if ($folderStore) {
 		isLoading.set(true);
 		$authStore && taskHandlers.getTasks($authStore.user.id, $folderStore);
+		tasksChannel && tasksChannel.unsubscribe();
+		tasksChannel = supabase
+			.channel('table-filter-changes')
+			.on(
+				'postgres_changes',
+				{
+					event: '*',
+					schema: 'public',
+					table: 'tasks',
+					filter: `owner=eq.${$authStore?.user.id}`
+				},
+				() => taskHandlers.getTasks($authStore?.user.id!, $folderStore)
+			)
+			.subscribe();
 	}
+
 	onMount(() => {
 		setTimeout(() => {
 			$authStore ? isLoading.set(false) : goto('/login');
 			$authStore?.user.id && taskHandlers.getTasks($authStore.user.id, $folderStore);
 		}, 0);
-		window &&	
+		window &&
 			document.addEventListener('keypress', (e) => {
 				if (e.key === '/') {
 					const activeElement = document.activeElement;
@@ -66,13 +85,17 @@
 						modalStore.set({
 							component: Folders,
 							props: {
-								isStandalone: true,
+								isStandalone: true
 							},
 							isLoading: false
 						});
 					}
 				}
 			});
+	});
+
+	onDestroy(() => {
+		tasksChannel.unsubscribe();
 	});
 
 	function handleConsider(e: { detail: { items: Item[] } }, status: taskStatus) {

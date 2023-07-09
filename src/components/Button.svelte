@@ -1,8 +1,9 @@
 <script lang="ts">
 	export let text: string;
+	export let button: any | null = null;
 </script>
 
-<button class="btn" on:click>{text}</button>
+<button class="btn" on:click bind:this={button}>{text}</button>
 
 <style lang="scss">
 	button {

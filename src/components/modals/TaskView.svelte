@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { taskStatus, type task_t, type newmilestone_t, type milestone_t } from '$lib/types';
 	import { closeModal } from '$lib/utils';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import IconButton from '../IconButton.svelte';
 	import { supabase } from '../../supabase';
 	import { authStore, folderStore, isEditing, modalStore, userStore } from '$lib/stores';
@@ -22,6 +22,8 @@
 		status: taskStatus.ToDo
 	};
 	let milestoneDiv: HTMLDivElement;
+
+	let TaskViewChannel: any;
 
 	function getTask() {
 		supabase
@@ -67,6 +69,23 @@
 
 	onMount(() => {
 		getTask();
+		TaskViewChannel = supabase
+			.channel('table-filter-changes')
+			.on(
+				'postgres_changes',
+				{
+					event: '*',
+					schema: 'public',
+					table: 'tasks',
+					filter: `id=eq.${$modalStore?.props.taskId}`
+				},
+				() => getTask()
+			)
+			.subscribe();
+	});
+
+	onDestroy(() => {
+		TaskViewChannel.unsubscribe();
 	});
 </script>
 
@@ -115,14 +134,15 @@
 				</MenuButton>
 				<MenuItems>
 					<FlyIn class="menu-items">
-						<MenuItem class="menu-item">
+						<MenuItem
+							class="menu-item"
+							on:click={() => {
+								$authStore?.user.id &&
+									taskHandlers.deleteTask(task?.id, $authStore?.user.id, $folderStore);
+							}}
+						>
 							<!-- svelte-ignore a11y-click-events-have-key-events -->
-							<Icon
-								on:click={() => {
-									$authStore?.user.id &&
-										taskHandlers.deleteTask(task?.id, $authStore?.user.id, $folderStore);
-								}}
-							>
+							<Icon>
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
 									viewBox="0 0 24 24"
@@ -179,10 +199,10 @@
 										props: {
 											isChangingFolder: true,
 											taskId: task.id,
-											taskName: task.name,
+											taskName: task.name
 										},
-										isLoading: false,
-									})
+										isLoading: false
+									});
 								}}
 							>
 								<Icon>
@@ -286,6 +306,34 @@
 							<div class="name">{milestone.name}</div>
 						</div>
 						<div class="end">
+							<IconButton
+								on:click={() => {
+									if (task.milestones)
+										task.milestones = taskHandlers.moveMilestoneUp(
+											task.milestones,
+											milestone,
+											task.id
+										);
+								}}
+							>
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+									<path d="M12 19V6M5 12l7-7 7 7" />
+								</svg>
+							</IconButton>
+							<IconButton
+								on:click={() => {
+									if (task.milestones)
+										task.milestones = taskHandlers.moveMilestoneDown(
+											task.milestones,
+											milestone,
+											task.id
+										);
+								}}
+							>
+								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+									<path d="M12 5v13M5 12l7 7 7-7" />
+								</svg>
+							</IconButton>
 							<IconButton
 								on:click={() => {
 									if (task.milestones)
@@ -507,6 +555,7 @@
 				align-items: center;
 				padding: 0.5rem;
 				justify-content: space-between;
+				gap: 0.5rem;
 
 				&:first-child {
 					padding-top: 1rem;
@@ -553,7 +602,11 @@
 				.end {
 					display: flex;
 					align-items: center;
-					gap: 0.5rem;
+					gap: 0.25rem;
+
+					@media screen and (max-width: 768px) {
+						gap: 0.5rem;
+					}
 				}
 			}
 		}

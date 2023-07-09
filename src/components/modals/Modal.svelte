@@ -65,6 +65,7 @@
 
 		.Modal {
 			min-width: 40vw;
+			max-width: 50vw;
 			min-height: 40vh;
 			max-height: 60vh;
 
@@ -80,6 +81,7 @@
 
 			@media screen and (max-width: 768px) {
 				min-width: 90vw;
+				max-width: 95vw;
 			}
 
 			.content {

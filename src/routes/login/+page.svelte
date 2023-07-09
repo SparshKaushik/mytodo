@@ -2,12 +2,13 @@
 	import './page.scss';
 
 	import { goto } from '$app/navigation';
-	import { authStore, isLoading } from '$lib/stores';
+	import { authStore, isLoading, modalStore } from '$lib/stores';
 	import Input from '../../components/Input.svelte';
 	import Button from '../../components/Button.svelte';
 	import FlyIn from '../../components/Transitions/FlyIn.svelte';
 	import { onMount } from 'svelte';
 	import { authHandlers } from '$lib/model';
+	import Resetpwd from '../../components/modals/Resetpwd.svelte';
 
 	$: $authStore ? goto('/') : onMount(() => isLoading.set(false));
 
@@ -29,10 +30,10 @@
 					stroke-width="2"
 					stroke-linecap="round"
 					stroke-linejoin="round"
-					><path
-						d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
-					/><polyline points="22,6 12,13 2,6" /></svg
 				>
+					<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+					<polyline points="22,6 12,13 2,6" />
+				</svg>
 			</Input>
 			<Input type="password" placeholder="Password" bind:inputValue={password}>
 				<svg
@@ -45,10 +46,10 @@
 					stroke-width="2"
 					stroke-linecap="round"
 					stroke-linejoin="round"
-					><rect x="3" y="11" width="18" height="11" rx="2" ry="2" /><path
-						d="M7 11V7a5 5 0 0 1 10 0v4"
-					/></svg
 				>
+					<rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+					<path d="M7 11V7a5 5 0 0 1 10 0v4" />
+				</svg>
 			</Input>
 			<div class="actions">
 				<Button
@@ -60,7 +61,20 @@
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
 				<div>Don't Have an Account ? <span on:click={() => goto('/register')}>Register</span></div>
 				<!-- svelte-ignore a11y-click-events-have-key-events -->
-				<div><span on:click={() => goto('/forgotpwd')}>Forgot Password</span></div>
+				<div>
+					<span
+						on:click={() =>
+							modalStore.set({
+								component: Resetpwd,
+								props: {
+									isStandalone: true
+								},
+								isLoading: false
+							})}
+					>
+						Forgot Password
+					</span>
+				</div>
 			</div>
 		</form>
 	</FlyIn>
