@@ -102,6 +102,7 @@ svg {
 
 .menu {
 	position: relative;
+	z-index: 1000;
 
 	.menu-items {
 		position: absolute;

@@ -2,12 +2,11 @@
 	import { taskStatus, type task_t, type newmilestone_t, type milestone_t } from '$lib/types';
 	import { closeModal } from '$lib/utils';
 	import { onDestroy, onMount } from 'svelte';
-	import IconButton from '../IconButton.svelte';
 	import { supabase } from '../../supabase';
 	import { authStore, folderStore, isEditing, modalStore, userStore } from '$lib/stores';
 	import { taskHandlers } from '$lib/model';
 	import { Menu, MenuButton, MenuItem, MenuItems } from '@rgossiaux/svelte-headlessui';
-	import Button from '../Button.svelte';
+	import IconButton from '../IconButton.svelte';
 	import FlyIn from '../Transitions/FlyIn.svelte';
 	import Icon from '../Icon.svelte';
 	import Folders from './Folders.svelte';
@@ -582,6 +581,7 @@
 						font-size: 1rem;
 						font-weight: 400;
 						width: 100%;
+						overflow-wrap: anywhere;
 
 						&:is([contenteditable='true']) {
 							border: 1px solid #a0a0a0;
