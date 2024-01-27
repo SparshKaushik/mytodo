@@ -248,7 +248,7 @@ export const userHandlers = {
 					userStore.set({
 						id: user.id,
 						name: user.name,
-						folders: JSON.parse(user.folders)
+						folders: user.folders
 					});
 				} else {
 					metadata &&
