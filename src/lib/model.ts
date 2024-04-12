@@ -266,13 +266,13 @@ export const folderHandlers = {
 		supabase
 			.from('users')
 			.update({
-				folders: JSON.stringify([
+				folders: [
 					...folders,
 					{
 						icon: '📁',
 						name
 					}
-				])
+				]
 			})
 			.eq('id', user_id)
 			.then(() => {
@@ -289,7 +289,7 @@ export const folderHandlers = {
 		isSaving.set(true);
 		supabase
 			.from('users')
-			.update({ folders: JSON.stringify(folders) })
+			.update({ folders: folders })
 			.eq('id', user_id)
 			.then(() => {
 				if (folders.length > 0) {
